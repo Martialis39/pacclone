@@ -6,7 +6,7 @@ player.tick = 1
 player.position = {x=1 * g.step, y= 1 * g.step}
 player.h = g.step
 player.w = g.step
-player.dir = {x=0, y=0}
+player.dir = {x=1, y=0}
 player.next_dir = {x=0,y=0}
 player.speed = 1
 player.draw = function()
@@ -31,6 +31,7 @@ function rect_rect_collision( player, object )
 end
 
 local move = function()
+  local old_position = player.position
   local ndir = {x=0, y=0}
   if(btnp(0)) then
     ndir.x = -1
@@ -47,39 +48,51 @@ local move = function()
   end
 
   if(ndir.x != 0) then
-    player.dir.x = ndir.x
+    player.next_dir.x = ndir.x
   end
 
   if(ndir.y != 0) then
-    player.dir.y = ndir.y
+    player.next_dir.y = ndir.y
   end
 
-  
---   if(maybe.position.x < 0) then
---   	maybe.position.x = 0
---   end
---   if(maybe.position.x > 128) then
---   	maybe.position.x = 128 - g.step
---   end
-  
-  local old_position = player.position
+  if player.next_dir.x !=0 or player.next_dir.y !=0 then
+  -- try to move to new direction
+    local maybe = {x=0, y=0}
+    maybe.x = player.position.x + player.speed * player.next_dir.x
+    maybe.y = player.position.y + player.speed * player.next_dir.y
 
-  local maybe = {position={}}
-  maybe.position.x = player.position.x + player.speed * player.dir.x
-  maybe.position.y = player.position.y + player.speed * player.dir.y
+    player.position = maybe
+    local collision = false
+    for_each_grid(level, function(tile)
+        if rect_rect_collision(player, tile) then
+            collision = true
+        end
+    end)
 
-  player.position = maybe.position
-  local collision = false
-  for_each_grid()
-  for_each_grid(level, function(tile)
-    if rect_rect_collision(player, tile) then
-        collision = true
+    if collision == false then
+        player.dir.x= player.next_dir.x
+        player.dir.y= player.next_dir.y
+        player.next_dir = {x=0, y=0}
+        return -- no need to check further
+    else
+        player.position = old_position
     end
-  end)
+  end
 
+  -- try move to old direction
+  local maybe = {x=0, y=0}
+  maybe.x = player.position.x + player.speed * player.dir.x
+  maybe.y = player.position.y + player.speed * player.dir.y
+  
+  player.position = maybe
+  local collision = false
+  for_each_grid(level, function(tile)
+      if rect_rect_collision(player, tile) then
+          collision = true
+      end
+  end)
   if collision then
-    player.position = old_position
-    player.dir = {x=0, y=0}
+      player.position = old_position
   end
 end
 
