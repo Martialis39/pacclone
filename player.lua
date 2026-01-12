@@ -67,7 +67,8 @@ local move = function()
         if rect_rect_collision(player, tile) then
             collision = true
         end
-    end)
+    -- end, collision)
+    end, function() return collision end)
 
     if collision == false then
         player.dir.x= player.next_dir.x
@@ -90,7 +91,7 @@ local move = function()
       if rect_rect_collision(player, tile) then
           collision = true
       end
-  end)
+  end, function() return collision end)
   if collision then
       player.position = old_position
   end
