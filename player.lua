@@ -6,6 +6,9 @@ player.tick = 1
 player.position = {x=1 * g.step, y= 1 * g.step}
 player.h = g.step
 player.w = g.step
+player.dir = {x=0, y=0}
+player.next_dir = {x=0,y=0}
+player.speed = 1
 player.draw = function()
  spr(player.frames[player.f_index], player.position.x, player.position.y)
 end
@@ -28,30 +31,42 @@ function rect_rect_collision( player, object )
 end
 
 local move = function()
-  local maybe = {position={}}
-  maybe.position.x = player.position.x
-  maybe.position.y = player.position.y
+  local ndir = {x=0, y=0}
   if(btnp(0)) then
-    maybe.position.x -= g.step
+    ndir.x = -1
   end
   if(btnp(1)) then
-    maybe.position.x += g.step
+    ndir.x = 1
   end
   
   if(btnp(2)) then
-   maybe.position.y -= g.step
+    ndir.y = -1
   end
   if(btnp(3)) then
-    maybe.position.y += g.step
+    ndir.y = 1
   end
+
+  if(ndir.x != 0) then
+    player.dir.x = ndir.x
+  end
+
+  if(ndir.y != 0) then
+    player.dir.y = ndir.y
+  end
+
   
-  if(maybe.position.x < 0) then
-  	maybe.position.x = 0
-  end
-  if(maybe.position.x > 128 - g.step) then
-  	maybe.position.x = 128 - g.step
-  end
+--   if(maybe.position.x < 0) then
+--   	maybe.position.x = 0
+--   end
+--   if(maybe.position.x > 128) then
+--   	maybe.position.x = 128 - g.step
+--   end
+  
   local old_position = player.position
+
+  local maybe = {position={}}
+  maybe.position.x = player.position.x + player.speed * player.dir.x
+  maybe.position.y = player.position.y + player.speed * player.dir.y
 
   player.position = maybe.position
   local collision = false
@@ -64,6 +79,7 @@ local move = function()
 
   if collision then
     player.position = old_position
+    player.dir = {x=0, y=0}
   end
 end
 
