@@ -13,17 +13,20 @@ player.draw = function()
  spr(player.frames[player.f_index], player.position.x, player.position.y)
 end
 
+player.check_tile_collision = function(object)
+    if object.type == 'o' then
+        return
+    end
+
+    local r1 = {}
+    r1.x, r1.y = player.position.x, player.position.y
+    r1.w, r1.h = player.w, player.h
+    return rect_rect_collision(r1, object)
+
+end
+
 -- ty nerdy teachers!
-function rect_rect_collision( player, object )
-  if object.type == 'o' then
-      return
-  end
-  local r1 = {}
-  r1.x, r1.y = player.position.x, player.position.y
-  r1.w, r1.h = player.w, player.h
-
-  local r2 = object
-
+function rect_rect_collision( r1, r2 )
   return r1.x < r2.x+r2.w and
          r1.x+r1.w > r2.x and
          r1.y < r2.y+r2.h and
@@ -64,7 +67,7 @@ local move = function()
     player.position = maybe
     local collision = false
     for_each_grid(level, function(tile)
-        if rect_rect_collision(player, tile) then
+        if player.check_tile_collision(tile) then
             collision = true
         end
     -- end, collision)
@@ -88,7 +91,7 @@ local move = function()
   player.position = maybe
   local collision = false
   for_each_grid(level, function(tile)
-      if rect_rect_collision(player, tile) then
+      if player.check_tile_collision(tile) then
           collision = true
       end
   end, function() return collision end)
