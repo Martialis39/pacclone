@@ -14,8 +14,8 @@ player.draw = function()
 end
 
 player.check_tile_collision = function(object)
-    if object.type == 'o' then
-        return
+    if object.type == "o" or object.type == "g" then
+        return false
     end
 
     local r1 = {}
