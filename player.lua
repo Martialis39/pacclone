@@ -66,9 +66,11 @@ local move = function()
 
     player.position = maybe
     local collision = false
+    local collision_tile = nil
     for_each_grid(level, function(tile)
         if player.check_tile_collision(tile) then
             collision = true
+            collision_tile = tile
         end
     -- end, collision)
     end, function() return collision end)
@@ -79,6 +81,9 @@ local move = function()
         player.next_dir = {x=0, y=0}
         return -- no need to check further
     else
+        add_debug_gfx(function()
+            rect(collision_tile.x, collision_tile.y, collision_tile.x + 8, collision_tile.y + 8, 9)
+        end)
         player.position = old_position
     end
   end

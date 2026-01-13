@@ -2,6 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 
+#include echoes.lua
 #include util.lua
 
 g = {}
@@ -21,7 +22,10 @@ function _draw()
   cls()
   draw_level(level)
   player.draw() 
-  end
+
+  print_echoes()
+  draw_debug_gfx()
+end
 
 function _update()
   player.upd()
