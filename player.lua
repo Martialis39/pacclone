@@ -38,23 +38,29 @@ local move = function()
   local ndir = {x=0, y=0}
   if(btnp(0)) then
     ndir.x = -1
+    ndir.y = 0
   end
   if(btnp(1)) then
     ndir.x = 1
+    ndir.y = 0
   end
   
   if(btnp(2)) then
+    ndir.x = 0
     ndir.y = -1
   end
   if(btnp(3)) then
+    ndir.x = 0
     ndir.y = 1
   end
 
   if(ndir.x != 0) then
     player.next_dir.x = ndir.x
+    player.next_dir.y = ndir.y
   end
 
   if(ndir.y != 0) then
+    player.next_dir.x = ndir.x
     player.next_dir.y = ndir.y
   end
 
@@ -102,6 +108,9 @@ local move = function()
   end, function() return collision end)
   if collision then
       player.position = old_position
+      player.dir.x = 0
+      player.dir.y = 0
+      player.next_dir = {x=0, y=0}
   end
 end
 
