@@ -22,10 +22,13 @@ local level_1 = [[
 local wall = "#"
 local open = "o"
 local grass = "g"
-local grass_tile = 19
+local grass2 = "g2"
+local grass_tiles = {19, 22}
+local wall_s = 17
+local open_s = 16
 
-local create_tile = function(x, y, type)
-    return {x=x, y=y, type=type, h=g.step, w=g.step}
+local create_tile = function(x, y, type, spr)
+    return {x=x, y=y, type=type, h=g.step, w=g.step, s=spr}
 end
 
 local create_level = function()
@@ -38,13 +41,20 @@ local create_level = function()
         m[i] = {}
         local row = split(l, "")
         foreach(row, function (letter)
+            local sprite = open_s
+            if letter == wall then
+                sprite = wall_s
+            end
             if letter == open then
-
                 if rnd() > 0.85 then
-                    letter = grass
+                    if rnd() <= 0.5 then
+                        sprite = grass_tiles[1]
+                    else 
+                        sprite = grass_tiles[2]
+                    end
                 end
             end
-            local t = create_tile(x, y, letter)
+            local t = create_tile(x, y, letter, sprite)
             x = x + g.step
             add(m[i], t)
         end)
@@ -57,26 +67,10 @@ local create_level = function()
     return m
 end
 
-
-
 local draw_level = function(level)
     foreach(level, function(line)
         foreach(line, function(tile)
-            local x = tile.x
-            local y = tile.y
-            local letter = tile.type
-            local s = 0
-            if(letter == wall) then
-                s = 17
-            end
-
-            if(letter == open) then
-                s = 16
-            end
-
-            if(letter == grass) then
-                s = grass_tile
-            end
+            local x, y, s = tile.x, tile.y, tile.s
             spr(s, x, y)
         end)
     end)
