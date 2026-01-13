@@ -26,6 +26,21 @@ function print_echoes(c, x, y)
 	echoes = {}
 end
 
+-- optional: label (header caption)
+function echo_tbl(tbl, label)
+	if type(tbl) == "table" then
+		add(echoes,"--")
+		add(echoes,"[ " .. (label or "unlabeled") .. " ]")
+		add(echoes,"")
+		--
+		for k,v in pairs(tbl) do
+			add(echoes,("+ " .. k .. ": " .. tostr(v)))
+		end
+		--
+		add(echoes,"--")
+	end
+end
+
 -- my own extension
 debug_gfx = {}
 
@@ -37,4 +52,5 @@ function draw_debug_gfx()
     foreach(debug_gfx, function(fn)
         if fn then fn() end
     end)
+    debug_gfx = {}
 end
