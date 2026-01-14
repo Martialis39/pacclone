@@ -7,10 +7,11 @@ player.position = mult_vec2(vec2(1, 1), g.step)
 player.h = g.step
 player.w = g.step
 player.dir = vec2(1)
+player.flipped = false
 player.next_dir = vec2()
 player.speed = 1
 player.draw = function()
- spr(player.frames[player.f_index], player.position.x, player.position.y)
+ spr(player.frames[player.f_index], player.position.x, player.position.y, 1, 1, player.flipped)
 end
 
 player.check_tile_collision = function(object)
@@ -34,6 +35,7 @@ function rect_rect_collision( r1, r2 )
 end
 
 local move = function()
+--   player.flipped = false
   local old_position = player.position
   local ndir = vec2()
   if(btnp(0)) then
@@ -75,6 +77,11 @@ local move = function()
         player.dir.x= player.next_dir.x
         player.dir.y= player.next_dir.y
         player.next_dir = vec2()
+        if(player.next_dir.x < 0) then
+            player.flipped = true
+        elseif (player.next_dir.x > 0) then
+            player.flipped = false
+        end
         return -- no need to check further
     else
         -- add_debug_gfx(function()
@@ -99,6 +106,12 @@ local move = function()
       player.position = old_position
       player.dir = vec2()
       player.next_dir = vec2()
+  else
+      if(player.dir.x < 0) then
+          player.flipped = true
+      elseif (player.dir.x > 0) then
+          player.flipped = false
+      end
   end
 end
 
