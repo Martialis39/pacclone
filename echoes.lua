@@ -54,3 +54,8 @@ function draw_debug_gfx()
     end)
     debug_gfx = {}
 end
+
+function myrect(x, y, h, w, col)
+    col = col or 1
+    rect(x, y, x+w, y+h)
+end
