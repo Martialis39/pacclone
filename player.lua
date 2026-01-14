@@ -3,11 +3,11 @@ player = {}
 player.frames = {1,2}
 player.f_index = 1
 player.tick = 1
-player.position = {x=1 * g.step, y= 1 * g.step}
+player.position = mult_vec2(vec2(1, 1), g.step)
 player.h = g.step
 player.w = g.step
-player.dir = {x=1, y=0}
-player.next_dir = {x=0,y=0}
+player.dir = vec2(1)
+player.next_dir = vec2()
 player.speed = 1
 player.draw = function()
  spr(player.frames[player.f_index], player.position.x, player.position.y)
@@ -35,40 +35,30 @@ end
 
 local move = function()
   local old_position = player.position
-  local ndir = {x=0, y=0}
+  local ndir = vec2()
   if(btnp(0)) then
-    ndir.x = -1
-    ndir.y = 0
+    ndir = vec2(-1, 0)
   end
   if(btnp(1)) then
-    ndir.x = 1
-    ndir.y = 0
+    ndir = vec2(1, 0)
   end
   
   if(btnp(2)) then
-    ndir.x = 0
-    ndir.y = -1
+    ndir = vec2(0, -1)
   end
   if(btnp(3)) then
-    ndir.x = 0
-    ndir.y = 1
+    ndir = vec2(0, 1)
   end
 
-  if(ndir.x != 0) then
-    player.next_dir.x = ndir.x
-    player.next_dir.y = ndir.y
-  end
-
-  if(ndir.y != 0) then
-    player.next_dir.x = ndir.x
-    player.next_dir.y = ndir.y
+  if ndir.x != 0 or ndir.y != 0 then
+    player.next_dir = ndir
   end
 
   if player.next_dir.x !=0 or player.next_dir.y !=0 then
   -- try to move to new direction
-    local maybe = {x=0, y=0}
-    maybe.x = player.position.x + player.speed * player.next_dir.x
-    maybe.y = player.position.y + player.speed * player.next_dir.y
+
+    local delta_v = mult_vec2(player.next_dir, player.speed)
+    local maybe = add_vec2(player.position, delta_v)
 
     player.position = maybe
     local collision = false
@@ -84,20 +74,19 @@ local move = function()
     if collision == false then
         player.dir.x= player.next_dir.x
         player.dir.y= player.next_dir.y
-        player.next_dir = {x=0, y=0}
+        player.next_dir = vec2()
         return -- no need to check further
     else
-        add_debug_gfx(function()
-            rect(collision_tile.x, collision_tile.y, collision_tile.x + 8, collision_tile.y + 8, 9)
-        end)
+        -- add_debug_gfx(function()
+        --     rect(collision_tile.x, collision_tile.y, collision_tile.x + 8, collision_tile.y + 8, 9)
+        -- end)
         player.position = old_position
     end
   end
 
   -- try move to old direction
-  local maybe = {x=0, y=0}
-  maybe.x = player.position.x + player.speed * player.dir.x
-  maybe.y = player.position.y + player.speed * player.dir.y
+  local delta_v = mult_vec2(player.dir, player.speed)
+  local maybe = add_vec2(player.position, delta_v)
   
   player.position = maybe
   local collision = false
@@ -108,9 +97,8 @@ local move = function()
   end, function() return collision end)
   if collision then
       player.position = old_position
-      player.dir.x = 0
-      player.dir.y = 0
-      player.next_dir = {x=0, y=0}
+      player.dir = vec2()
+      player.next_dir = vec2()
   end
 end
 
