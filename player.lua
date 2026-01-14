@@ -26,6 +26,16 @@ player.check_tile_collision = function(object)
 
 end
 
+player.check_map_collision = function()
+  local collision = false
+  for_each_grid(level, function(tile)
+      if player.check_tile_collision(tile) then
+          collision = true
+      end
+  end, function() return collision end)
+  return collision
+end
+
 -- ty nerdy teachers!
 function rect_rect_collision( r1, r2 )
   return r1.x < r2.x+r2.w and
@@ -63,30 +73,19 @@ local move = function()
     local maybe = add_vec2(player.position, delta_v)
 
     player.position = maybe
-    local collision = false
-    local collision_tile = nil
-    for_each_grid(level, function(tile)
-        if player.check_tile_collision(tile) then
-            collision = true
-            collision_tile = tile
-        end
-    -- end, collision)
-    end, function() return collision end)
+    local collision = player.check_map_collision()
 
     if collision == false then
         player.dir.x= player.next_dir.x
         player.dir.y= player.next_dir.y
         player.next_dir = vec2()
-        if(player.next_dir.x < 0) then
+        if(player.dir.x < 0) then
             player.flipped = true
-        elseif (player.next_dir.x > 0) then
+        elseif (player.dir.x > 0) then
             player.flipped = false
         end
         return -- no need to check further
     else
-        -- add_debug_gfx(function()
-        --     rect(collision_tile.x, collision_tile.y, collision_tile.x + 8, collision_tile.y + 8, 9)
-        -- end)
         player.position = old_position
     end
   end
@@ -94,14 +93,9 @@ local move = function()
   -- try move to old direction
   local delta_v = mult_vec2(player.dir, player.speed)
   local maybe = add_vec2(player.position, delta_v)
-  
   player.position = maybe
-  local collision = false
-  for_each_grid(level, function(tile)
-      if player.check_tile_collision(tile) then
-          collision = true
-      end
-  end, function() return collision end)
+
+  local collision = player.check_map_collision()
   if collision then
       player.position = old_position
       player.dir = vec2()
