@@ -61,8 +61,6 @@ function find_path(srow, scol, erow, ecol, grid)
     local found = false
     local q = {}
     add(q, {col=scol, row = srow})
-    printh('here', "log.txt", true)
-    -- printh(#q, "log.txt")
     while #q > 0 and found == false do
         local curr = q[1]
         deli(q, 1)
@@ -73,13 +71,11 @@ function find_path(srow, scol, erow, ecol, grid)
         foreach(ns, function(neighbor)
             if found then return end
             local r, c = neighbor.row, neighbor.col
-            printh(r..":"..c, "log.txt")
             if visited[r][c] == true then return end
             if grid[r][c].type == "#" then return end -- is wall
             prev[row][col] = {row = neighbor.row, col=neighbor.col}
             if c == ecol and r == erow then
                 found = true
-                printh("Found it!", "log.txt")
             else
                 add(q, neighbor)
             end
@@ -97,14 +93,12 @@ function path_from_result(srow, scol, erow, ecol, prev)
     local path = {}
     local current = prev[srow][scol]
     while current != "empty" do
-        printh("it!", "log.txt")
         add(path, current)
         local next = prev[current.row][current.col]
         current = next
     end
     add(path, {row=erow, col=ecol})
 
-    printh(#path, "log.txt")
     return path
 end
 
