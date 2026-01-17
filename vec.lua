@@ -1,12 +1,18 @@
 
 -- ty nerdy teachers!
-mtbl = {
-  --__add called when + operator is used
+local mtbl = {
   __add = function(a, b) 
-      return { x = (a.x+b.x), y = (a.y+b.y) }
+      return vec2((a.x+b.x), (a.y+b.y))
   end,
   __eq = function(a, b)
       return a.x == b.x and b.y == a.y
+  end,
+  __tostring = function(table)
+    local s = ""
+    for k,v in pairs(table) do
+        s = s..k..": "..v.."; "
+    end
+    return s
   end
 }
 
