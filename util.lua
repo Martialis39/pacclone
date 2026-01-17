@@ -107,3 +107,21 @@ function path_from_result(srow, scol, erow, ecol, prev)
     printh(#path, "log.txt")
     return path
 end
+
+function log(str, override)
+    local o = override or false
+    printh(str, "log.txt", o)
+end
+
+function logt(t, l)
+    local label = l or nil
+    local s = ""
+    if label then
+        s = s .. label .. ": "
+    end
+    for k, v in pairs(t) do
+        local new_snip = k..":"..v.."; "
+        s = s .. new_snip
+    end
+    log(s)
+end

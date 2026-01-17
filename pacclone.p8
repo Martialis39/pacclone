@@ -15,7 +15,7 @@ g.step = 8
 level = create_level()
 
 function _init()
-
+  log("-- Start --", true)
 end
 
 
