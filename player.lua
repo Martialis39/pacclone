@@ -3,7 +3,7 @@ player = {}
 player.frames = {1,2}
 player.f_index = 1
 player.tick = 1
-player.position = mult_vec2(vec2(1, 1), g.step)
+player.position = vec2(8, 8)
 player.h = g.step
 player.w = g.step
 player.dir = vec2(1, 0)
@@ -78,7 +78,7 @@ local move = function()
   local on_tile = player.position.x % g.step == 0 and player.position.y % g.step == 0
   if on_tile then
     player.dir = player.next_dir
-    player.position = add_vec2(player.position, player.dir)
+    player.position += player.dir
     log("on tile")
 
     local collision = player.check_map_collision()
@@ -96,7 +96,7 @@ local move = function()
   logt(player.position, "pos")
   logt(player.next_dir, "next")
   logt(player.dir, "dir")
-  player.position = add_vec2(player.position, player.dir)
+  player.position += player.dir
   local collision = player.check_map_collision()
   if collision then
     log("in here")
