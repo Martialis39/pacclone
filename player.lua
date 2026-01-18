@@ -160,6 +160,6 @@ local animate = function()
 end
 
 player.upd = function()
-  animate()
+  animate(player)
   move()
 end

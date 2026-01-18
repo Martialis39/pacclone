@@ -57,5 +57,7 @@ end
 
 function myrect(x, y, h, w, col)
     col = col or 1
+    h = h or 8
+    w = w or 8
     rect(x, y, x+w, y+h)
 end

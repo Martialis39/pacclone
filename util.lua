@@ -55,30 +55,30 @@ function get_neighbours(row, col, grid)
     return result
 end
 
-function find_path(srow, scol, erow, ecol, grid)
+function find_path(start_row, start_col, end_row, end_col, grid)
     local visited = create_grid(#grid)
     local prev = create_grid(#grid)
     local found = false
-    local q = {}
-    add(q, {col=scol, row = srow})
+    local q = {{col=start_col, row = start_row}}
+    local i = 0
     while #q > 0 and found == false do
         local curr = q[1]
         deli(q, 1)
+        log(" I ran")
         local row = curr.row
         local col = curr.col
-        local ns = get_neighbours(row, col, grid)
+        local neighbors = get_neighbours(row, col, grid)
         visited[row][col] = true
-        foreach(ns, function(neighbor)
-            if found then return end
+        foreach(neighbors, function(neighbor)
             local r, c = neighbor.row, neighbor.col
             if visited[r][c] == true then return end
             if grid[r][c].type == "#" then return end -- is wall
-            prev[row][col] = {row = neighbor.row, col=neighbor.col}
-            if c == ecol and r == erow then
+            prev[r][c] = {row=row, col=col}
+            -- visited[r][c] = true
+            if c == end_col and r == end_row then
                 found = true
-            else
-                add(q, neighbor)
             end
+            add(q, neighbor)
         end)
     end
     return prev
@@ -86,20 +86,35 @@ end
 
 function solve(srow, scol, erow, ecol, grid)
   local res = find_path(srow, scol, erow, ecol, grid)
-  return path_from_result(srow, scol, erow, ecol, res)
+  local path = path_from_result(srow, scol, erow, ecol, res)
+  if #path > 0 then
+    foreach(path, function(t)
+        add_debug_gfx(myrect((t.col - 1) * 8, (t.row - 1) * 8))
+    end)
+  end
 end
 
 function path_from_result(srow, scol, erow, ecol, prev)
     local path = {}
-    local current = prev[srow][scol]
-    while current != "empty" do
+    -- log("here"..#prev)
+    test = prev
+    current = prev[erow][ecol]
+    
+    while current != "empty" and current != nil do
         add(path, current)
         local next = prev[current.row][current.col]
         current = next
     end
-    add(path, {row=erow, col=ecol})
+    log("P#")
+    log(#path)
+    if #path < 1 then return {} end
+    local r = reverse(path)
+    if r[1].col == scol and r[1].row == srow then
+        return r
+    else
+        return {}
+    end
 
-    return path
 end
 
 function log(str, override)
@@ -118,4 +133,45 @@ function logt(t, l)
         s = s .. new_snip
     end
     log(s)
+end
+
+function logtr(t, l)
+local label = l or nil
+    local s = ""
+    if label then
+        s = s .. label .. ": "
+    end
+    for k, v in pairs(t) do
+        if type(v) == "table" then
+            local res = logtr(v, k)
+            s = s..res
+        else
+            local new_snip = k..":"..v.."; "
+        s = s .. new_snip
+        end
+    end
+    log(s)
+    return s
+end
+
+
+local animate = function(entity)
+  entity.tick += 1
+  if entity.tick > 4 then
+    entity.tick = 0
+    entity.f_index += 1
+    if entity.f_index > #entity.frames then
+      entity.f_index = 1
+    end 
+  end
+end
+
+ function reverse(table)
+    local res = {}
+    local j = 1
+    for i=#table, 1, -1 do
+        res[i] = table[j]
+        j += 1
+    end
+    return res
 end
