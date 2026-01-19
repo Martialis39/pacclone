@@ -40,7 +40,7 @@ end
 function _update()
   player.upd()
   foreach(enemies, function(enemy)
-    enemy.upd()
+    enemy.upd(player)
   end)
   
 end

@@ -1,6 +1,9 @@
 
 -- ty nerdy teachers!
 local mtbl = {
+  __sub = function(a, b) 
+      return vec2((a.x-b.x), (a.y-b.y))
+  end,
   __add = function(a, b) 
       return vec2((a.x+b.x), (a.y+b.y))
   end,

@@ -23,27 +23,10 @@ function create_enemy(x, y)
     enemy.path = nil
 
     enemy.move_towards_tile = function()
-        local t = tile_to_world(enemy.target_tile)
-        local tx, ty = t.x, t.y
+        local t = vec2(enemy.target_tile.col, enemy.target_tile.row)
+        local enemy_tile_position = vec2(flr(enemy.position.x / g.step), flr(enemy.position.y / g.step))
 
-        local dir = vec2()
-
-        if enemy.position.x < tx then
-            dir.x = 1
-        elseif enemy.position.x > tx then
-            dir.x = -1
-        end
-
-        if enemy.position.y < ty then
-            dir.y = 1
-        elseif enemy.position.y > ty then
-            dir.y = -1
-        end
-        
-        enemy.position += dir
-
-
-        if enemy.position == t then
+        if t == enemy_tile_position then
             deli(enemy.path, 1)
             if #enemy.path > 0 then
                 enemy.target_tile = enemy.path[1]
@@ -52,32 +35,32 @@ function create_enemy(x, y)
             end
         end
 
+
+        local dir = t - enemy_tile_position
+        enemy.position += dir
     end
 
-    enemy.upd = function()
+    enemy.upd = function(player)
         animate(enemy)
-        enemy.move()
+        enemy.move(player)
     end
 
-    enemy.move = function()
-        -- if enemy.path == nil then
-        --     local sx, sy = flr(enemy.position.x / g.step), flr(enemy.position.y / g.step)
-        --     local p = solve(sx, sy, 1, 1, level)
-        --     if #p < 1 then
-        --         return
-        --     end
-        --     enemy.path = p
-        --     deli(enemy.path, 1)
-        --     enemy.target_tile = enemy.path[1]
-        -- end
-
-        -- if enemy.path then
-        --     enemy.move_towards_tile()
-        -- end
-
-
-
-
+    enemy.move = function(player)
+        if enemy.path then
+            enemy.move_towards_tile()
+            return
+        end
+        if enemy.path == nil then
+            local sx, sy = flr(enemy.position.x / g.step), flr(enemy.position.y / g.step)
+            local player_tile_pos = vec2(flr(player.position.x / g.step), flr(player.position.y / g.step))
+            local p = solve(sy + 1, sx + 1, player_tile_pos.y + 1, player_tile_pos.x + 1, level)
+            if #p < 1 then
+                return
+            end
+            enemy.path = p
+            deli(enemy.path, 1)
+            enemy.target_tile = enemy.path[1]
+        end
     end
     return enemy
 end

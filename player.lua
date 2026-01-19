@@ -79,27 +79,18 @@ local move = function()
   if on_tile then
     player.dir = player.next_dir
     player.position += player.dir
-    log("on tile")
 
     local collision = player.check_map_collision()
     if collision then
-        log("has collision")
-        logt(player.next_dir, "next")
-        logt(player.dir, "dir")
         player.position = old_position
         player.dir = old_dir
     else
         return
     end
   end
-  log("in the else")
-  logt(player.position, "pos")
-  logt(player.next_dir, "next")
-  logt(player.dir, "dir")
   player.position += player.dir
   local collision = player.check_map_collision()
   if collision then
-    log("in here")
     player.position = old_position
     player.dir = vec2()
   end

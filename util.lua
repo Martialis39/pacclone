@@ -18,18 +18,6 @@ function for_each_grid(grid, fn, break_fn)
 end
 
 
-function create_grid(n)
-    local rows = {}
-    for i=1, n do
-        local row = {}
-        for j=1, n do
-            add(row, "empty")
-        end
-        add(rows, row)
-    end
-    return rows
-end
-
 function isInBounds(row, col, gridSize)
     return row > 0 and col > 0 and row < gridSize + 1 and col < gridSize + 1
 end
@@ -55,29 +43,33 @@ function get_neighbours(row, col, grid)
     return result
 end
 
-function find_path(start_row, start_col, end_row, end_col, grid)
-    local visited = create_grid(#grid)
-    local prev = create_grid(#grid)
-    local found = false
+function bfs(start_row, start_col, end_row, end_col, grid)
+    local visited = {}
+    local prev = {}
+    for i=1, #grid do
+        visited[i] = {}
+        prev[i] = {}
+    end
     local q = {{col=start_col, row = start_row}}
     local i = 0
-    while #q > 0 and found == false do
+    while #q > 0 do
         local curr = q[1]
         deli(q, 1)
-        log(" I ran")
-        local row = curr.row
-        local col = curr.col
-        local neighbors = get_neighbours(row, col, grid)
+        local row,col = curr.row, curr.col
+        if col == end_col and row == end_row then
+            break
+        end
         visited[row][col] = true
+
+        local neighbors = get_neighbours(row, col, grid)
+
         foreach(neighbors, function(neighbor)
             local r, c = neighbor.row, neighbor.col
-            if visited[r][c] == true then return end
-            if grid[r][c].type == "#" then return end -- is wall
-            prev[r][c] = {row=row, col=col}
-            -- visited[r][c] = true
-            if c == end_col and r == end_row then
-                found = true
+            if visited[r][c] == true or grid[r][c].type == "#" then
+                return 
             end
+            visited[r][c] = true
+            prev[r][c] = {row=row, col=col}
             add(q, neighbor)
         end)
     end
@@ -85,36 +77,40 @@ function find_path(start_row, start_col, end_row, end_col, grid)
 end
 
 function solve(srow, scol, erow, ecol, grid)
-  local res = find_path(srow, scol, erow, ecol, grid)
-  local path = path_from_result(srow, scol, erow, ecol, res)
-  if #path > 0 then
-    foreach(path, function(t)
-        add_debug_gfx(myrect((t.col - 1) * 8, (t.row - 1) * 8))
-    end)
-  end
+  local res = bfs(srow, scol, erow, ecol, grid)
+  return path_from_result(srow, scol, erow, ecol, res)
 end
 
-function path_from_result(srow, scol, erow, ecol, prev)
+function path_from_result(sr, sc, er, ec, prev)
+    if not prev[er][ec] then return {} end
+
     local path = {}
-    -- log("here"..#prev)
-    test = prev
-    current = prev[erow][ecol]
+    local current = {row = er, col = ec}
     
-    while current != "empty" and current != nil do
+    while current do
         add(path, current)
         local next = prev[current.row][current.col]
         current = next
     end
-    log("P#")
-    log(#path)
-    if #path < 1 then return {} end
+
+    if #path < 1 then
+        return {}
+    end
     local r = reverse(path)
-    if r[1].col == scol and r[1].row == srow then
+    if r[1].col == sc and r[1].row == sr then
         return r
     else
         return {}
     end
 
+end
+
+function debug_path(path)
+  if #path > 0 then
+    foreach(path, function(t)
+        add_debug_gfx(myrect((t.col - 1) * 8, (t.row - 1) * 8))
+    end)
+  end
 end
 
 function log(str, override)
