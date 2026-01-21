@@ -76,11 +76,6 @@ function bfs(start_row, start_col, end_row, end_col, grid)
     return prev
 end
 
-function solve(srow, scol, erow, ecol, grid)
-  local res = bfs(srow, scol, erow, ecol, grid)
-  return path_from_result(srow, scol, erow, ecol, res)
-end
-
 function path_from_result(sr, sc, er, ec, prev)
     if not prev[er][ec] then return {} end
 
@@ -105,6 +100,24 @@ function path_from_result(sr, sc, er, ec, prev)
 
 end
 
+function solve_for_entities(a, b)
+
+  local a_tile_pos = vec2(flr(a.position.x / g.step), flr(a.position.y / g.step))
+  a_tile_pos += vec2(1,1)
+
+  local b_tile_pos = vec2(flr(b.position.x / g.step), flr(b.position.y / g.step))
+  b_tile_pos += vec2(1,1)
+  local sr, sc = a_tile_pos.y, a_tile_pos.x
+  local er, ec = b_tile_pos.y, b_tile_pos.x
+  return solve(sr, sc, er, ec, level)
+end
+
+function solve(srow, scol, erow, ecol, grid)
+  local res = bfs(srow, scol, erow, ecol, grid)
+  return path_from_result(srow, scol, erow, ecol, res)
+end
+
+
 function debug_path(path)
   if #path > 0 then
     foreach(path, function(t)
@@ -116,6 +129,7 @@ end
 function log(str, override)
     local o = override or false
     printh(str, "log.txt", o)
+    return o
 end
 
 function logt(t, l)
@@ -129,6 +143,7 @@ function logt(t, l)
         s = s .. new_snip
     end
     log(s)
+    return s
 end
 
 function logtr(t, l)

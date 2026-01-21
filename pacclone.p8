@@ -13,18 +13,30 @@ g.step = 8
 #include enemy.lua
 #include player.lua
 #include map.lua
+#include unittest.lua
 
 level = create_level()
 
 local enemies = {}
 
+local upd_fn = unit_test_upd
+local draw_fn = unit_test_draw
+local init_fn = unit_test_init
+
 function _init()
-  log("-- Start --", true)
-  add(enemies, create_enemy())
+  -- log("-- Start --", true)
+  -- add(enemies, create_enemy())
+  init_fn()
 end
 
+local game_upd = function()
+  player.upd()
+  foreach(enemies, function(enemy)
+    enemy.upd(player)
+  end)
+end
 
-function _draw()
+local game_draw = function()
   cls()
   draw_level(level)
   player.draw() 
@@ -37,12 +49,12 @@ function _draw()
   draw_debug_gfx()
 end
 
+function _draw()
+  draw_fn()
+end
+
 function _update()
-  player.upd()
-  foreach(enemies, function(enemy)
-    enemy.upd(player)
-  end)
-  
+  upd_fn()
 end
 __gfx__
 00000000008888800000000007860088000786880000000000000000000000000000000000000000000000000000000000000000000000000000000000000000

@@ -31,8 +31,9 @@ local create_tile = function(x, y, type, spr)
     return {x=x, y=y, type=type, h=g.step, w=g.step, s=spr}
 end
 
-local create_level = function()
-    local lines = split(level_1, "\n")
+local create_level = function(l)
+    local level = l or level_1
+    local lines = split(level, "\n")
     local m = {}
     local i = 1
     local x = 0
