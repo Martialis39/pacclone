@@ -107,14 +107,14 @@ end
 
 function describe(txt, test_fns)
     local block = {txt}
-    print(txt)
-    foreach(test_fns, function(test_fn)
-        test_fn()
-    end)
+    -- print(txt)
     -- foreach(test_fns, function(test_fn)
-    --     add(block, test_fn())
+    --     test_fn()
     -- end)
-    -- add(unit_tests, block)
+    foreach(test_fns, function(test_fn)
+        add(block, test_fn())
+    end)
+    add(unit_tests, block)
 end
 
 
