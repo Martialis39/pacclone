@@ -62,13 +62,39 @@ function unit_test_init()
             logt(e.position, "pos")
             return e.position.x == 17
         end,
+        function()
+            local e = create_enemy(1, 1)
+            player.position = vec2(3*8, 1*8)
+            local level_str = "OOOO\nOOOO\nOOOO\nOOOO"
+            level = create_level(level_str)
+            for i=0, 8 do
+                e.upd(player)
+            end
+            local mid_result = e.position.x == 8
+
+
+            for i=0, 8 * 4 do
+                e.upd(player)
+            end
+
+            return e.path == nil and e.position.x == player.position.x and mid_result
+        end,
+        function()
+            local e = create_enemy(1, 1)
+            player.position = vec2(3*8, 1*8)
+            local level_str = "O#OO\nO#OO\nO#OO\nO#OO"
+            level = create_level(level_str)
+            for i=0, 8 do
+                e.upd(player)
+            end
+
+            return e.path == nil
+        end,
     })
 end
 
 function unit_test_draw()
     cls()
-    -- print("here we go")
-    -- print(".. and there it is!")
 
     foreach(unit_tests, function(res)
         local header = res[1]
@@ -81,10 +107,27 @@ end
 
 function describe(txt, test_fns)
     local block = {txt}
+    print(txt)
     foreach(test_fns, function(test_fn)
-        add(block, test_fn())
+        test_fn()
     end)
-    add(unit_tests, block)
+    -- foreach(test_fns, function(test_fn)
+    --     add(block, test_fn())
+    -- end)
+    -- add(unit_tests, block)
+end
+
+
+function expect(label, test_fn)
+    local res = test_fn()
+    local col = 8 
+    if res then 
+        col = 11
+    end
+    print("  "..label, col)
+    print("----", 7)
+
+
 end
 
 -- function it(txt, test_fn)
