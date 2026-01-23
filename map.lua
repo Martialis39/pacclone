@@ -1,23 +1,23 @@
 
 
-local level_1 = [[
-################
-#oooooooooooooo#
-#o####o#o#####o#
-#o####o#o#####o#
-#o####o#o#####o#
-#oooooooooooooo#
-#o############o#
-#o############o#
-#oooooooooooooo#
-#o############o#
-#o############o#
-#oooooooooooooo#
-#o############o#
-#o############o#
-#oooooooooooooo#
-################
-]]
+local level_1 = {
+"################",
+"#oooooooooooooo#",
+"#o####o#o#####o#",
+"#o####o#o#####o#",
+"#o####o#o#####o#",
+"#oooooooooooooo#",
+"#o############o#",
+"#o############o#",
+"#oooooooooooooo#",
+"#o############o#",
+"#o############o#",
+"#oooooooooooooo#",
+"#o############o#",
+"#o############o#",
+"#oooooooooooooo#",
+"################",
+}
 
 local wall = "#"
 local open = "o"
@@ -33,12 +33,11 @@ end
 
 local create_level = function(l)
     local level = l or level_1
-    local lines = split(level, "\n")
     local m = {}
     local i = 1
     local x = 0
     local y = 0
-    foreach(lines, function(l)
+    foreach(level, function(l)
         m[i] = {}
         local row = split(l, "")
         foreach(row, function (letter)

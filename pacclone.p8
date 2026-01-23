@@ -18,8 +18,9 @@ local enemies = {}
 
 local game_init = function()
   -- log("-- Start --", true)
-  log("Called it")
-  add(enemies, create_enemy(2, 8))
+  log("-- Start log --", true)
+  add(enemies, create_enemy(5, 15))
+  
 end
 
 local game_upd = function()

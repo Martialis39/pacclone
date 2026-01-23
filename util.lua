@@ -68,7 +68,8 @@ function bfs(start_row, start_col, end_row, end_col, grid)
             if visited[r][c] == true or grid[r][c].type == "#" then
                 return 
             end
-            visited[r][c] = true
+
+            -- visited[r][c] = true
             prev[r][c] = {row=row, col=col}
             add(q, neighbor)
         end)
