@@ -104,10 +104,9 @@ end
 function solve_for_entities(a, b)
 
   local a_tile_pos = vec2(flr(a.position.x / g.step), flr(a.position.y / g.step))
-  a_tile_pos += vec2(1,1)
 
   local b_tile_pos = vec2(flr(b.position.x / g.step), flr(b.position.y / g.step))
-  b_tile_pos += vec2(1,1)
+
   local sr, sc = a_tile_pos.y, a_tile_pos.x
   local er, ec = b_tile_pos.y, b_tile_pos.x
   return solve(sr, sc, er, ec, level)
@@ -122,7 +121,7 @@ end
 function debug_path(path)
   if #path > 0 then
     foreach(path, function(t)
-        add_debug_gfx(myrect((t.col - 1) * 8, (t.row - 1) * 8))
+        add_debug_gfx(myrect((t.col) * 8, (t.row) * 8))
     end)
   end
 end

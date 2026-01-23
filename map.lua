@@ -35,8 +35,8 @@ local create_level = function(l)
     local level = l or level_1
     local m = {}
     local i = 1
-    local x = 0
-    local y = 0
+    local x = g.step
+    local y = g.step
     foreach(level, function(l)
         m[i] = {}
         local row = split(l, "")
@@ -59,7 +59,7 @@ local create_level = function(l)
             add(m[i], t)
         end)
 
-        x = 0
+        x = g.step
         y = y + g.step
         i = i + 1
     end)

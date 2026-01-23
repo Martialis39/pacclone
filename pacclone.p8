@@ -19,6 +19,7 @@ local enemies = {}
 local game_init = function()
   -- log("-- Start --", true)
   log("-- Start log --", true)
+  camera(g.step, g.step)
   add(enemies, create_enemy(5, 15))
   
 end

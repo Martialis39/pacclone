@@ -10,7 +10,7 @@ function create_enemy(row, col)
     enemy.f_index = 1
     enemy.tick = 1
     enemy.tile_pos = {row=row, col=col}
-    enemy.position = vec2((col - 1) * g.step, (row - 1) * g.step)
+    enemy.position = vec2((col) * g.step, (row) * g.step)
     enemy.h = g.step
     enemy.w = g.step
     -- enemy.dir = vec2(-1, 0)
@@ -32,11 +32,11 @@ function create_enemy(row, col)
         if not enemy.target_tile then
             return
         end
-        local tp = {row=flr(enemy.position.y / g.step) + 1, col = flr(enemy.position.x / g.step) + 1}
+        local tp = {row=flr(enemy.position.y / g.step), col = flr(enemy.position.x / g.step)}
         local tt = enemy.target_tile
 
-        local t_world_x = ( tt.col - 1 ) * g.step
-        local t_world_y = ( tt.row - 1 ) * g.step
+        -- local t_world_x = ( tt.col - 1 ) * g.step
+        -- local t_world_y = ( tt.row - 1 ) * g.step
         
         -- log("Tile w pos")
         -- log(t_world_x)
@@ -44,7 +44,7 @@ function create_enemy(row, col)
         -- log("Pos")
         -- logt(enemy.position)
 
-        if enemy.position.x == (tt.col - 1) * g.step and enemy.position.y == ( tt.row - 1 ) * g.step then
+        if enemy.position.x == (tt.col) * g.step and enemy.position.y == ( tt.row) * g.step then
         -- if tt.row == tp.row and tt.col == tp.col then
             enemy.target_tile = nil
             deli(enemy.path, 1)
@@ -58,16 +58,16 @@ function create_enemy(row, col)
         end
         local dx = 0
         local dy = 0
-        if enemy.position.y < (tt.row - 1)* g.step then
+        if enemy.position.y < (tt.row)* g.step then
             dy = 1
         end
-        if enemy.position.y > (tt.row - 1) * g.step then
+        if enemy.position.y > (tt.row) * g.step then
             dy = -1
         end
-        if enemy.position.x < (tt.col - 1) * g.step then
+        if enemy.position.x < (tt.col) * g.step then
             dx = 1
         end
-        if enemy.position.x > (tt.col - 1) * g.step then
+        if enemy.position.x > (tt.col) * g.step then
             dx = -1
         end
 
