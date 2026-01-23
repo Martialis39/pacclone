@@ -37,7 +37,7 @@ end
 
 player.check_map_collision = function()
   local collision = false
-  for_each_grid(level, function(tile)
+  for_each_grid(g.level, function(tile)
       if player.check_tile_collision(tile) then
           collision = true
       end

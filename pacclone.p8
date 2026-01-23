@@ -19,6 +19,7 @@ local enemies = {}
 local game_init = function()
   -- log("-- Start --", true)
   log("-- Start log --", true)
+  g.level = create_level()
   camera(g.step, g.step)
   add(enemies, create_enemy(5, 15))
   
@@ -33,7 +34,7 @@ end
 
 local game_draw = function()
   cls()
-  draw_level(level)
+  draw_level(g.level)
   player.draw() 
 
   foreach(enemies, function(enemy)
@@ -44,7 +45,6 @@ local game_draw = function()
   draw_debug_gfx()
 end
 
-level = create_level()
 
 
 -- local upd_fn = unit_test_upd
