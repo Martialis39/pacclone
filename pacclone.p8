@@ -2,14 +2,16 @@ pico-8 cartridge // http://www.pico-8.com
 version 43
 __lua__
 
+g = {}
+g.step = 8
+g.state = "game"
+
+local enemies = {}
 
 #include vec.lua
 #include echoes.lua
 #include util.lua
 
-g = {}
-g.step = 8
-local enemies = {}
 
 #include enemy.lua
 #include player.lua
@@ -17,7 +19,6 @@ local enemies = {}
 #include unittest.lua
 
 local game_init = function()
-  -- log("-- Start --", true)
   log("-- Start log --", true)
   g.level = create_level()
   camera(g.step, g.step)

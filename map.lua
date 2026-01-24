@@ -31,32 +31,38 @@ local create_tile = function(x, y, type, spr)
     return {x=x, y=y, type=type, h=g.step, w=g.step, s=spr}
 end
 
-local create_level = function(l)
-    local level = l or level_1
-    local m = {}
+function determine_sprite(letter)
+    local sprite = open_s
+    if letter == wall then
+        sprite = wall_s
+        return sprite
+    end
+    if letter == open then
+        if rnd() > 0.85 then
+            if rnd() <= 0.5 then
+                sprite = grass_tiles[1]
+            else 
+                sprite = grass_tiles[2]
+            end
+        end
+    end
+    return sprite
+end
+
+local create_level = function(lev)
+    local level = lev or level_1
+    local game_map = {}
     local i = 1
     local x = g.step
     local y = g.step
     foreach(level, function(l)
-        m[i] = {}
+        game_map[i] = {}
         local row = split(l, "")
         foreach(row, function (letter)
-            local sprite = open_s
-            if letter == wall then
-                sprite = wall_s
-            end
-            if letter == open then
-                if rnd() > 0.85 then
-                    if rnd() <= 0.5 then
-                        sprite = grass_tiles[1]
-                    else 
-                        sprite = grass_tiles[2]
-                    end
-                end
-            end
+            local sprite = determine_sprite(letter)
             local t = create_tile(x, y, letter, sprite)
             x = x + g.step
-            add(m[i], t)
+            add(game_map[i], t)
         end)
 
         x = g.step
@@ -64,7 +70,7 @@ local create_level = function(l)
         i = i + 1
     end)
 
-    return m
+    return game_map
 end
 
 local draw_level = function(level)
