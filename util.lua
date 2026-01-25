@@ -212,5 +212,34 @@ check_tile_collision = function(entity, object)
     r1.x, r1.y = entity.position.x, entity.position.y
     r1.w, r1.h = entity.w, entity.h
     return rect_rect_collision(r1, object)
+end
 
+-- Events
+
+recalc_path_event = "recalc"
+
+local listeners = {
+    [recalc_path_event] = {}
+}
+
+function add_listener(type, fn)
+    if (listeners[type]) then
+        add(listeners[type], fn)
+    end
+end
+
+
+function emit(t)
+    local ls = listeners[t]
+    if not ls then
+        return
+    end
+    foreach(ls, function(listener)
+        listener()
+    end)
+
+end
+
+function emit_recalc()
+    emit(recalc_path_event)
 end

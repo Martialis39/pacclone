@@ -11,7 +11,6 @@ function create_enemy(row, col)
     enemy.flipped = true
     enemy.speed = 1
     enemy.target_tile = nil
-    enemy.player_prev_position = vec2()
     enemy.draw = function()
         if enemy.path then
             debug_path(enemy.path)
@@ -22,9 +21,9 @@ function create_enemy(row, col)
         spr(enemy.frames[enemy.f_index], enemy.position.x, enemy.position.y, 1, 1, enemy.flipped)
     end
     enemy.path = nil
-    enemy.get_tile_position = function()
-        return vec2(flr(enemy.position.x / g.step), flr(enemy.position.y / g.step))
-    end
+    add_listener(recalc_path_event, function ()
+        enemy.should_recalc = true
+    end)
 
     enemy.move_towards_tile = function()
         if not enemy.target_tile then
@@ -57,6 +56,7 @@ function create_enemy(row, col)
             end
         end
 
+        -- check if reached target
         if enemy.position.x == (tt.col) * g.step and enemy.position.y == ( tt.row) * g.step then
             enemy.target_tile = nil
             deli(enemy.path, 1)
@@ -74,11 +74,10 @@ function create_enemy(row, col)
     end
 
     enemy.move = function(player)
-        local player_tile_position = player.get_tile_position()
-        if player_tile_position != enemy.player_prev_position then
+        if enemy.should_recalc then
+            enemy.should_recalc = false
             enemy.path = nil
         end
-        enemy.player_prev_position = player_tile_position
         if enemy.path then
             enemy.move_towards_tile()
             return
@@ -88,7 +87,6 @@ function create_enemy(row, col)
             if #p < 1 then
                 return
             end
-            local enemy_tile_position = enemy.get_tile_position()
             deli(p, 1) -- same as enemy current position
             enemy.path = p
             enemy.target_tile = enemy.path[1]

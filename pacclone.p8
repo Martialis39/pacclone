@@ -23,7 +23,9 @@ local game_init = function()
   g.level = create_level()
   camera(g.step, g.step)
   add(enemies, create_enemy(5, 15))
-  
+  add(enemies, create_enemy(15, 2))
+  add(enemies, create_enemy(15, 5))
+
 end
 
 local game_upd = function()

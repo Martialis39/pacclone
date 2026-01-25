@@ -1,14 +1,10 @@
 
--- ty nerdy teachers!
 local mtbl = {
   __sub = function(a, b) 
       return vec2((a.x-b.x), (a.y-b.y))
   end,
   __add = function(a, b) 
       return vec2((a.x+b.x), (a.y+b.y))
-  end,
-  __mul = function(a, b) 
-      return vec2((a.x * b), (a.y * b))
   end,
   __eq = function(a, b)
       return a.x == b.x and b.y == a.y
