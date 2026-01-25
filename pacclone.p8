@@ -6,7 +6,7 @@ g = {}
 g.step = 8
 g.state = "game"
 
-local enemies = {}
+enemies = {}
 
 #include vec.lua
 #include echoes.lua

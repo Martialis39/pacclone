@@ -186,3 +186,31 @@ end
     end
     return res
 end
+-- ty nerdy teachers!
+function rect_rect_collision( r1, r2 )
+  return r1.x < r2.x+r2.w and
+         r1.x+r1.w > r2.x and
+         r1.y < r2.y+r2.h and
+         r1.y+r1.h > r2.y
+end
+
+check_map_collision = function(entity)
+  local collision = false
+  for_each_grid(g.level, function(tile)
+      if check_tile_collision(entity, tile) then
+          collision = true
+      end
+  end, function() return collision end)
+  return collision
+end
+
+check_tile_collision = function(entity, object)
+    if object.type == "o" or object.type == "g" or object.type == "g2" then
+        return false
+    end
+    local r1 = {}
+    r1.x, r1.y = entity.position.x, entity.position.y
+    r1.w, r1.h = entity.w, entity.h
+    return rect_rect_collision(r1, object)
+
+end

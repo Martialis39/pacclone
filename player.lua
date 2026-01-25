@@ -16,6 +16,10 @@ end
 
 player.position.x += 1
 
+player.get_tile_position = function()
+    return vec2(flr(player.position.x / g.step), flr(player.position.y / g.step))
+end
+
 player.maybe_flip = function()
     if(player.dir.x < 0) then
         player.flipped = true
@@ -24,34 +28,6 @@ player.maybe_flip = function()
     end
 end
 
-player.check_tile_collision = function(object)
-    if object.type == "o" or object.type == "g" or object.type == "g2" then
-        return false
-    end
-    local r1 = {}
-    r1.x, r1.y = player.position.x, player.position.y
-    r1.w, r1.h = player.w, player.h
-    return rect_rect_collision(r1, object)
-
-end
-
-player.check_map_collision = function()
-  local collision = false
-  for_each_grid(g.level, function(tile)
-      if player.check_tile_collision(tile) then
-          collision = true
-      end
-  end, function() return collision end)
-  return collision
-end
-
--- ty nerdy teachers!
-function rect_rect_collision( r1, r2 )
-  return r1.x < r2.x+r2.w and
-         r1.x+r1.w > r2.x and
-         r1.y < r2.y+r2.h and
-         r1.y+r1.h > r2.y
-end
 
 local move = function()
   local old_position = player.position
@@ -80,7 +56,7 @@ local move = function()
     player.dir = player.next_dir
     player.position += player.dir
 
-    local collision = player.check_map_collision()
+    local collision = check_map_collision(player)
     if collision then
         player.position = old_position
         player.dir = old_dir
@@ -89,7 +65,7 @@ local move = function()
     end
   end
   player.position += player.dir
-  local collision = player.check_map_collision()
+  local collision = check_map_collision(player)
   if collision then
     player.position = old_position
     player.dir = vec2()
@@ -139,16 +115,16 @@ local move = function()
 --   end
 end
 
-local animate = function()
-  player.tick += 1
-  if player.tick > 4 then
-    player.tick = 0
-    player.f_index += 1
-    if player.f_index > #player.frames then
-      player.f_index = 1
-    end 
-  end
-end
+-- local animate = function()
+--   player.tick += 1
+--   if player.tick > 4 then
+--     player.tick = 0
+--     player.f_index += 1
+--     if player.f_index > #player.frames then
+--       player.f_index = 1
+--     end 
+--   end
+-- end
 
 player.upd = function()
   animate(player)
