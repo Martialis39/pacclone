@@ -78,10 +78,6 @@ function create_enemy(row, col)
             enemy.should_recalc = false
             enemy.path = nil
         end
-        if enemy.path then
-            enemy.move_towards_tile()
-            return
-        end
         if enemy.path == nil then
             local p = solve_for_entities(enemy, player)
             if #p < 1 then
@@ -90,8 +86,8 @@ function create_enemy(row, col)
             deli(p, 1) -- same as enemy current position
             enemy.path = p
             enemy.target_tile = enemy.path[1]
-            enemy.move_towards_tile()
         end
+        enemy.move_towards_tile()
     end
     return enemy
 end
