@@ -25,6 +25,10 @@ local game_init = function()
   add(enemies, create_enemy(5, 15))
   add(enemies, create_enemy(15, 2))
   add(enemies, create_enemy(15, 5))
+  foreach(enemies, function(e)
+    e.target_fn = noop
+  end)
+  enemies[1].target_fn = compute_target_player
 
 end
 

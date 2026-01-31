@@ -11,6 +11,7 @@ function create_enemy(row, col)
     enemy.flipped = true
     enemy.speed = 1
     enemy.target_tile = nil
+    enemy.target_fn = nil
     enemy.draw = function()
         if enemy.path then
             debug_path(enemy.path)
@@ -79,7 +80,8 @@ function create_enemy(row, col)
             enemy.path = nil
         end
         if enemy.path == nil then
-            local p = solve_for_entities(enemy, player)
+            local target = enemy.target_fn(player, g.level)
+            local p = solve_for_entities(enemy, target)
             if #p < 1 then
                 return
             end
@@ -90,4 +92,13 @@ function create_enemy(row, col)
         enemy.move_towards_tile()
     end
     return enemy
+end
+
+function compute_target_player(player, grid)
+    return player
+end
+
+function noop(_player)
+    local t = {position = vec2(16,16)}
+    return t
 end
