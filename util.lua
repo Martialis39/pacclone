@@ -216,10 +216,10 @@ end
 
 -- Events
 
-recalc_path_event = "recalc"
+player_moved_event = "pme"
 
 local listeners = {
-    [recalc_path_event] = {}
+    [player_moved_event] = {}
 }
 
 function add_listener(type, fn)
@@ -241,5 +241,5 @@ function emit(t)
 end
 
 function emit_recalc()
-    emit(recalc_path_event)
+    emit(player_moved_event)
 end

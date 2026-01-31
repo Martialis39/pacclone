@@ -21,7 +21,7 @@ function create_enemy(row, col)
         spr(enemy.frames[enemy.f_index], enemy.position.x, enemy.position.y, 1, 1, enemy.flipped)
     end
     enemy.path = nil
-    add_listener(recalc_path_event, function ()
+    add_listener(player_moved_event, function ()
         enemy.should_recalc = true
     end)
 
