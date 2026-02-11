@@ -243,3 +243,11 @@ end
 function emit_recalc()
     emit(player_moved_event)
 end
+
+function foreachi(tbl, fn)
+    local i = 1
+    foreach(tbl, function(e)
+        fn(e, i)
+        i+=1
+    end)
+end

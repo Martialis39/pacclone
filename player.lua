@@ -3,7 +3,7 @@ player = {}
 player.frames = {1,2}
 player.f_index = 1
 player.tick = 1
-player.position = vec2(16, 16)
+player.position = vec2(8, 8)
 player.h = g.step
 player.w = g.step
 player.dir = vec2(1, 0)
@@ -11,10 +11,14 @@ player.flipped = false
 player.next_dir = vec2(1, 0)
 player.speed = 1
 player.draw = function()
- spr(player.frames[player.f_index], player.position.x, player.position.y, 1, 1, player.flipped)
+  local x = player.position.x
+  if player.flipped then
+    x -= 8 - g.step
+  end
+  spr(player.frames[player.f_index], x, player.position.y, 1, 1, player.flipped)
 end
 
-player.position.x += 1
+-- player.position.x += 1
 
 
 player.maybe_flip = function()
