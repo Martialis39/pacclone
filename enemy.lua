@@ -19,7 +19,11 @@ function create_enemy(row, col)
         add_debug_gfx(function ()
             myrect(enemy.position.x, enemy.position.y, 8, 8)
         end)
-        spr(enemy.frames[enemy.f_index], enemy.position.x, enemy.position.y, 1, 1, enemy.flipped)
+        local x = enemy.position.x
+        if enemy.flipped then
+            x -= 8 - g.step
+        end
+        spr(enemy.frames[enemy.f_index], x, enemy.position.y, 1, 1, enemy.flipped)
     end
     enemy.path = nil
     add_listener(player_moved_event, function ()
