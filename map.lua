@@ -24,7 +24,7 @@ local level_1 = {
 }
 
 local wall = "#"
-local open = "o"
+open = "o"
 local grass = "g"
 local grass2 = "g2"
 local grass_tiles = {19, 22}

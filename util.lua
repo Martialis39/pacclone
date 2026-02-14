@@ -18,8 +18,8 @@ function for_each_grid(grid, fn, break_fn)
 end
 
 
-function isInBounds(row, col, gridSize)
-    return row > 0 and col > 0 and row < gridSize + 1 and col < gridSize + 1
+function isInBounds(row, col)
+    return row > 0 and col > 0 and row < g.level_size + 1 and col < g.level_size + 1
 end
 
 function get_neighbours(row, col, grid)
@@ -35,7 +35,7 @@ function get_neighbours(row, col, grid)
         local diffRow, diffCol = coord[1], coord[2]
         local newRow = row + diffRow
         local newCol = col + diffCol
-        if isInBounds(newRow, newCol, #grid) then
+        if isInBounds(newRow, newCol) then
             add(result, {row=newRow, col=newCol})
         end
     end)
@@ -196,11 +196,23 @@ end
 
 check_map_collision = function(entity)
   local collision = false
-  for_each_grid(g.level, function(tile)
-      if check_tile_collision(entity, tile) then
-          collision = true
-      end
-  end, function() return collision end)
+  local tile_position_row = flr(entity.position.y / g.step)
+  local rows_to_check = {-1, 0, 1}
+  for i=1, #rows_to_check do
+    local new_row = tile_position_row + rows_to_check[i]
+    if not (new_row < 1 or new_row > g.level_size) then
+       local current_row = g.level[new_row]
+       for j=1, #current_row do
+         collision = check_tile_collision(entity, current_row[j]) 
+         if collision then
+            break
+         end
+       end
+    end
+    if collision then
+        break
+    end
+  end
   return collision
 end
 

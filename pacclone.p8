@@ -5,6 +5,7 @@ __lua__
 g = {}
 g.step = 4
 g.state = "game"
+g.level_size = 20
 
 enemies = {}
 
