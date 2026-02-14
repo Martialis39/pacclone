@@ -18,30 +18,6 @@ function for_each_grid(grid, fn, break_fn)
 end
 
 
-function isInBounds(row, col)
-    return row > 0 and col > 0 and row < g.level_size + 1 and col < g.level_size + 1
-end
-
-function get_neighbours(row, col, grid)
-    local coords = {
-        {0, 1},
-        {0, -1},
-        {1, 0},
-        {-1, 0}
-    }
-
-    local result = {}
-    foreach(coords, function(coord)
-        local diffRow, diffCol = coord[1], coord[2]
-        local newRow = row + diffRow
-        local newCol = col + diffCol
-        if isInBounds(newRow, newCol) then
-            add(result, {row=newRow, col=newCol})
-        end
-    end)
-
-    return result
-end
 
 function bfs(start_row, start_col, end_row, end_col, grid)
     local visited = {}
@@ -61,7 +37,7 @@ function bfs(start_row, start_col, end_row, end_col, grid)
         end
         visited[row][col] = true
 
-        local neighbors = get_neighbours(row, col, grid)
+        local neighbors = g.neighbor_map[row][col] or {}
 
         foreach(neighbors, function(neighbor)
             local r, c = neighbor.row, neighbor.col

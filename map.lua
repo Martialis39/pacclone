@@ -85,3 +85,46 @@ local draw_level = function(level)
         end)
     end)
 end
+
+local function isInBounds(row, col)
+    return row > 1 and col > 1 and row < g.level_size and col < g.level_size
+end
+
+local function get_neighbours(row, col, grid)
+    local coords = {
+        {0, 1},
+        {0, -1},
+        {1, 0},
+        {-1, 0}
+    }
+
+    local result = {}
+    foreach(coords, function(coord)
+        local diffRow, diffCol = coord[1], coord[2]
+        local newRow = row + diffRow
+        local newCol = col + diffCol
+        if isInBounds(newRow, newCol) then
+            add(result, {row=newRow, col=newCol})
+        end
+    end)
+
+    return result
+end
+
+create_neighbor_map = function (level)
+    local result = {}
+    local i = 1
+    for i=1, g.level_size do
+        result[i] = {}
+        for j=1, g.level_size do
+            local object = level[i][j]
+            if object.type == open then
+                local neighbors = get_neighbours(i, j, g.level)
+                result[i][j] = neighbors
+            else
+                result[i][j] = nil
+            end
+        end
+    end
+    return result
+end

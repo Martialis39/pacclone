@@ -24,6 +24,7 @@ enemies = {}
 local game_init = function()
   log("-- Start log --", true)
   g.level = create_level()
+  g.neighbor_map = create_neighbor_map(g.level)
   camera(g.step, g.step)
   add(enemies, create_enemy(5, 13))
   add(enemies, create_enemy(19, 19))
@@ -79,9 +80,10 @@ end
 
 function _update()
   -- log("Memory: " .. stat(0))
-  -- log("Stat 1: " .. stat(1))
   -- log("Current FPS: " .. stat(7))
   upd_fn()
+
+  log("Stat 1: " .. stat(1))
 end
 
 __gfx__
