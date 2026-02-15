@@ -87,7 +87,7 @@ local draw_level = function(level)
 end
 
 local function isInBounds(row, col)
-    return row > 1 and col > 1 and row < g.level_size and col < g.level_size
+    return row > 0 and col > 0 and row < g.level_size + 1 and col < g.level_size + 1
 end
 
 local function get_neighbours(row, col, grid)
