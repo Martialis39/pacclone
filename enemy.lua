@@ -13,12 +13,6 @@ function create_enemy(row, col)
     enemy.target_tile = nil
     enemy.target_fn = nil
     enemy.draw = function()
-        if enemy.path then
-            debug_path(enemy.path)
-        end
-        add_debug_gfx(function ()
-            myrect(enemy.position.x, enemy.position.y, 8, 8)
-        end)
         local x = enemy.position.x
         if enemy.flipped then
             x -= 8 - g.step
