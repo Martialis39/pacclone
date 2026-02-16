@@ -9,6 +9,7 @@ player.w = g.step
 player.dir = vec2(1, 0)
 player.flipped = false
 player.next_dir = vec2(1, 0)
+player.facing = vec2(1, 0)
 player.speed = 1
 player.draw = function()
   local x = player.position.x
@@ -49,6 +50,7 @@ local move = function()
 
   if ndir.x != 0 or ndir.y != 0 then
     player.next_dir = ndir
+    player.facing = ndir
   end
 
   local old_dir = player.dir

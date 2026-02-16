@@ -86,7 +86,7 @@ local draw_level = function(level)
     end)
 end
 
-local function isInBounds(row, col)
+function isInBounds(row, col)
     return row > 0 and col > 0 and row < g.level_size + 1 and col < g.level_size + 1
 end
 

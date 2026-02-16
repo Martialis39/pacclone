@@ -85,6 +85,7 @@ function solve_for_entities(a, b)
 
   local sr, sc = a_tile_pos.y, a_tile_pos.x
   local er, ec = b_tile_pos.y, b_tile_pos.x
+  if not isInBounds(er, ec) then return {} end
   return solve(sr, sc, er, ec, g.level)
 end
 

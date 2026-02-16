@@ -32,7 +32,7 @@ local game_init = function()
     e.target_fn = noop
   end)
   enemies[1].target_fn = compute_target_player
-  enemies[2].target_fn = compute_target_player
+  enemies[2].target_fn = compute_ahead_of_player
 
 end
 

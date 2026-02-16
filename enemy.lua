@@ -92,6 +92,32 @@ function create_enemy(row, col)
     return enemy
 end
 
+function compute_ahead_of_player(player, grid)
+    local x, y = player.position.x, player.position.y
+    local tile_x = flr(x / g.step)
+    local tile_y = flr(y / g.step) 
+    local tile_vec = vec2(tile_x, tile_y) + (player.facing * 3)
+    logt(tile_vec)
+    logt(player.dir, "Dir : ")
+    local result = tile_vec
+    -- local limit = 3
+    -- local i = 0
+    -- while i < limit  do
+    --     local t = tile_vec + player.dir * (3 - i)
+    --     if isInBounds(t.y, t.x) then
+    --         result = t
+    --         break
+
+    --     end
+    --     limit += 1
+        
+    -- end
+    local new_player = {}
+    new_player.position = result * g.step
+
+    return new_player
+end
+
 function compute_target_player(player, grid)
     return player
 end
