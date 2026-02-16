@@ -66,7 +66,7 @@ local create_level = function(lev)
         foreach(row, function (letter)
             local l = letter
             if letter == enemy_tile then
-                add(enemies, create_enemy(y / g.step, x / g.step))
+                add(g.enemies, create_enemy(y / g.step, x / g.step))
                 l = open
             end
             local sprite = determine_sprite(l)

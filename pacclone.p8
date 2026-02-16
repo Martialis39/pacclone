@@ -6,8 +6,7 @@ g = {}
 g.step = 4
 g.state = "game"
 g.level_size = 20
-
-enemies = {}
+g.enemies = {}
 
 #include util.lua
 #include menu.lua
@@ -26,19 +25,17 @@ local game_init = function()
   g.level = create_level()
   g.neighbor_map = create_neighbor_map(g.level)
   camera(g.step, g.step)
-  -- add(enemies, create_enemy(5, 13))
-  -- add(enemies, create_enemy(19, 19))
-  foreach(enemies, function(e)
+  foreach(g.enemies, function(e)
     e.target_fn = noop
   end)
-  enemies[1].target_fn = compute_target_player
-  enemies[2].target_fn = compute_ahead_of_player
+  g.enemies[1].target_fn = compute_target_player
+  g.enemies[2].target_fn = compute_ahead_of_player
 
 end
 
 local game_upd = function()
   player.upd()
-  foreach(enemies, function(enemy)
+  foreach(g.enemies, function(enemy)
     enemy.upd(player)
   end)
 end
@@ -48,7 +45,7 @@ local game_draw = function()
   draw_level(g.level)
   player.draw() 
 
-  foreach(enemies, function(enemy)
+  foreach(g.enemies, function(enemy)
     enemy.draw()
   end)
 
