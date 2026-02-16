@@ -5,7 +5,7 @@ local level_1 = {
 "#oooooooooooooooooo#",
 "#o######ooooo#####o#",
 "#o######ooooo#####o#",
-"#o######ooooo#####o#",
+"#o######oxoxo#####o#",
 "#o################o#",
 "#oooooooooooooooooo#",
 "#o################o#",
@@ -23,6 +23,7 @@ local level_1 = {
 "####################",
 }
 
+enemy_tile = "x"
 local wall = "#"
 open = "o"
 local grass = "g"
@@ -63,8 +64,13 @@ local create_level = function(lev)
         game_map[i] = {}
         local row = split(l, "")
         foreach(row, function (letter)
-            local sprite = determine_sprite(letter)
-            local t = create_tile(x, y, letter, sprite)
+            local l = letter
+            if letter == enemy_tile then
+                add(enemies, create_enemy(y / g.step, x / g.step))
+                l = open
+            end
+            local sprite = determine_sprite(l)
+            local t = create_tile(x, y, l, sprite)
             x = x + g.step
             add(game_map[i], t)
         end)
