@@ -31,16 +31,16 @@ function create_enemy(row, col)
         local tt = enemy.target_tile
         local moves = {}
         if enemy.position.y < (tt.row)* g.step then
-            add(moves, vec2(0, 1))
+            add(moves, vec2(0, 0.5))
         end
         if enemy.position.y > (tt.row) * g.step then
-            add(moves, vec2(0, -1))
+            add(moves, vec2(0, -0.5))
         end
         if enemy.position.x < (tt.col) * g.step then
-            add(moves, vec2(1, 0))
+            add(moves, vec2(0.5, 0))
         end
         if enemy.position.x > (tt.col) * g.step then
-            add(moves, vec2(-1, 0))
+            add(moves, vec2(-0.5, 0))
         end
 
         local old_position = enemy.position

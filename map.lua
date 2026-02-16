@@ -43,6 +43,7 @@ function determine_sprite(letter)
         return sprite
     end
     if letter == open then
+        -- sprite = 5
         if rnd() > 0.85 then
             if rnd() <= 0.5 then
                 sprite = grass_tiles[1]
