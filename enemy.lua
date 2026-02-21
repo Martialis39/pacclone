@@ -107,18 +107,6 @@ function compute_ahead_of_player(player, grid)
     logt(tile_vec)
     logt(player.dir, "Dir : ")
     local result = tile_vec
-    -- local limit = 3
-    -- local i = 0
-    -- while i < limit  do
-    --     local t = tile_vec + player.dir * (3 - i)
-    --     if isInBounds(t.y, t.x) then
-    --         result = t
-    --         break
-
-    --     end
-    --     limit += 1
-        
-    -- end
     local new_player = {}
     new_player.position = result * g.step
 
