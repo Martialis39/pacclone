@@ -18,7 +18,6 @@ g.enemies = {}
 #include enemy.lua
 #include player.lua
 #include map.lua
-#include unittest.lua
 
 local game_init = function()
   log("-- Start log --", true)
@@ -55,9 +54,6 @@ end
 
 
 
--- local upd_fn = unit_test_upd
--- local draw_fn = unit_test_draw
--- local init_fn = unit_test_init
 local upd_fn = game_upd
 local draw_fn = game_draw
 local init_fn = game_init
