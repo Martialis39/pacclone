@@ -12,8 +12,6 @@ g.enemies = {}
 #include menu.lua
 
 #include vec.lua
-#include echoes.lua
-
 
 #include enemy.lua
 #include player.lua
@@ -48,8 +46,6 @@ local game_draw = function()
     enemy.draw()
   end)
 
-  print_echoes()
-  -- draw_debug_gfx()
 end
 
 
