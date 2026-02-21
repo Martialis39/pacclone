@@ -11,7 +11,9 @@ function create_enemy(row, col)
     enemy.flipped = true
     enemy.speed = 1
     enemy.target_tile = nil
+    enemy.prev_tile = nil
     enemy.target_fn = nil
+    enemy.movement_coroutine = nil
     enemy.draw = function()
         local x = enemy.position.x
         if enemy.flipped then
@@ -24,70 +26,75 @@ function create_enemy(row, col)
         enemy.should_recalc = true
     end)
 
-    enemy.move_towards_tile = function()
-        if not enemy.target_tile then
-            return
-        end
-        local tt = enemy.target_tile
-        local moves = {}
-        if enemy.position.y < (tt.row)* g.step then
-            add(moves, vec2(0, 0.5))
-        end
-        if enemy.position.y > (tt.row) * g.step then
-            add(moves, vec2(0, -0.5))
-        end
-        if enemy.position.x < (tt.col) * g.step then
-            add(moves, vec2(0.5, 0))
-        end
-        if enemy.position.x > (tt.col) * g.step then
-            add(moves, vec2(-0.5, 0))
-        end
 
-        local old_position = enemy.position
-        for i=1, #moves do
-            local move = moves[i]
-            enemy.position += move
-            local collision = check_map_collision(enemy)
-            if collision then
-                enemy.position = old_position
-            else
-                break
-            end
-        end
-
-        -- check if reached target
-        if enemy.position.x == (tt.col) * g.step and enemy.position.y == ( tt.row) * g.step then
-            enemy.target_tile = nil
-            deli(enemy.path, 1)
-            if #enemy.path > 0 then
-                enemy.target_tile = enemy.path[1]
-            else
-                enemy.path = nil
-            end
-        end
-    end
 
     enemy.upd = function(player)
+        if not enemy.target_tile then
+            enemy.target_tile = enemy.target_fn(player, g.level)
+        end
         animate(enemy)
         enemy.move(player)
     end
 
     enemy.move = function(player)
-        if enemy.should_recalc then
-            enemy.should_recalc = false
-            enemy.path = nil
-        end
-        if enemy.path == nil then
-            local target = enemy.target_fn(player, g.level)
-            local p = solve_for_entities(enemy, target)
-            if #p < 1 then
+        -- if enemy.should_recalc then
+        --     enemy.should_recalc = false
+        --     enemy.target_tile = nil
+        -- end
+        -- if enemy.target_tile == nil then
+        --     local target = enemy.target_fn(player, g.level)
+        --     enemy.target_tile = target
+        -- end
+
+        if enemy.movement_coroutine then
+            if(costatus(enemy.movement_coroutine) != "dead") then
+                assert(coresume(enemy.movement_coroutine))
                 return
+            else
+                enemy.movement_coroutine = nil
+                local tile_position = {}
+                tile_position.x = flr(enemy.position.x / g.step)
+                tile_position.y = flr(enemy.position.y / g.step)
+                enemy.prev_tile = tile_position
+
             end
-            deli(p, 1) -- same as enemy current position
-            enemy.path = p
-            enemy.target_tile = enemy.path[1]
+        else
+            local tt = enemy.target_tile
+            local tile_position = {}
+            tile_position.x = flr(enemy.position.x / g.step)
+            tile_position.y = flr(enemy.position.y / g.step)
+            -- logt(enemy.position, "EP")
+            -- logt(tile_position, "TP")
+            local neighbors = g.neighbor_map[tile_position.y][tile_position.x]
+            local closest_index = 1
+            local current_best = 999 -- random big number
+            foreachi(neighbors, function(n, i)
+                local dist = distance_to(vec2(n.col, n.row), vec2(tt.col, tt.row))
+                logt(enemy.prev_tile, "prev tile")
+                logt(n, "n")
+                if dist < current_best then
+                    if enemy.prev_tile == nil or enemy.prev_tile.x != n.row and enemy.prev_tile.y != n.col then
+                        current_best = dist
+                        closest_index = i
+                    end
+                end
+            end)
+            enemy.movement_coroutine = cocreate(function()
+                local target = neighbors[closest_index]
+                local frames = 4
+                for i=1, frames do
+
+                    local new_x = lerp(enemy.position.x, target.col * g.step, i / frames ) 
+                    enemy.position.x = new_x
+                    local new_y = lerp(enemy.position.y, target.row * g.step, i / frames ) 
+                    enemy.position.y = new_y
+                    log("New x "..new_x)
+                    log("New y "..new_y)
+                    yield()
+                end
+            end)
         end
-        enemy.move_towards_tile()
+        
     end
     return enemy
 end

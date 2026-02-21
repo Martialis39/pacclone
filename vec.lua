@@ -30,3 +30,7 @@ function vec2(x, y)
     setmetatable(t, mtbl)
     return t
 end
+
+function distance_to(a, b)
+    return abs(a.x - b.x) + abs(a.y - b.y)
+end

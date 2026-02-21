@@ -1,26 +1,24 @@
-
-
 local level_1 = {
-"####################",
-"#oooooooooooooooooo#",
-"#o######ooooo#####o#",
-"#o######ooooo#####o#",
-"#o######oxoxo#####o#",
-"#o################o#",
-"#oooooooooooooooooo#",
-"#o################o#",
-"#o################o#",
-"#oooooooooooooooooo#",
-"#o################o#",
-"#o################o#",
-"#oooooooooooooooooo#",
-"#o################o#",
-"#o################o#",
-"#o################o#",
-"#o################o#",
-"#o################o#",
-"#oooooooooooooooooo#",
-"####################",
+    "####################",
+    "#oooooooooooooooooo#",
+    "#o######ooooo#####o#",
+    "#o######ooooo#####o#",
+    "#o######oooxo#####o#",
+    "#o################o#",
+    "#oooooooooooooooooo#",
+    "#o################o#",
+    "#o################o#",
+    "#oooooooooooooooooo#",
+    "#o################o#",
+    "#o################o#",
+    "#oooooooooooooooooo#",
+    "#o################o#",
+    "#o################o#",
+    "#o################o#",
+    "#o################o#",
+    "#o################o#",
+    "#oooooooooooooooooo#",
+    "####################"
 }
 
 enemy_tile = "x"
@@ -28,12 +26,12 @@ local wall = "#"
 open = "o"
 local grass = "g"
 local grass2 = "g2"
-local grass_tiles = {19, 22}
+local grass_tiles = { 19, 22 }
 local wall_s = 17
 local open_s = 16
 
 local create_tile = function(x, y, type, spr)
-    return {x=x, y=y, type=type, h=g.step, w=g.step, s=spr}
+    return { x = x, y = y, type = type, h = g.step, w = g.step, s = spr }
 end
 
 function determine_sprite(letter)
@@ -47,7 +45,7 @@ function determine_sprite(letter)
         if rnd() > 0.85 then
             if rnd() <= 0.5 then
                 sprite = grass_tiles[1]
-            else 
+            else
                 sprite = grass_tiles[2]
             end
         end
@@ -61,36 +59,43 @@ local create_level = function(lev)
     local i = 1
     local x = g.step
     local y = g.step
-    foreach(level, function(l)
-        game_map[i] = {}
-        local row = split(l, "")
-        foreach(row, function (letter)
-            local l = letter
-            if letter == enemy_tile then
-                add(g.enemies, create_enemy(y / g.step, x / g.step))
-                l = open
-            end
-            local sprite = determine_sprite(l)
-            local t = create_tile(x, y, l, sprite)
-            x = x + g.step
-            add(game_map[i], t)
-        end)
-
-        x = g.step
-        y = y + g.step
-        i = i + 1
-    end)
+    foreach(
+        level, function(l)
+            game_map[i] = {}
+            local row = split(l, "")
+            foreach(
+                row, function(letter)
+                    local l = letter
+                    if letter == enemy_tile then
+                        add(g.enemies, create_enemy(y / g.step, x / g.step))
+                        l = open
+                    end
+                    local sprite = determine_sprite(l)
+                    local t = create_tile(x, y, l, sprite)
+                    x = x + g.step
+                    add(game_map[i], t)
+                end
+            )
+            x = g.step
+            y = y + g.step
+            i = i + 1
+        end
+    )
 
     return game_map
 end
 
 local draw_level = function(level)
-    foreach(level, function(line)
-        foreach(line, function(tile)
-            local x, y, s = tile.x, tile.y, tile.s
-            spr(s, x, y)
-        end)
-    end)
+    foreach(
+        level, function(line)
+            foreach(
+                line, function(tile)
+                    local x, y, s = tile.x, tile.y, tile.s
+                    spr(s, x, y)
+                end
+            )
+        end
+    )
 end
 
 function isInBounds(row, col)
@@ -99,31 +104,33 @@ end
 
 local function get_neighbours(row, col, grid)
     local coords = {
-        {0, 1},
-        {0, -1},
-        {1, 0},
-        {-1, 0}
+        { 0, 1 },
+        { 0, -1 },
+        { 1, 0 },
+        { -1, 0 }
     }
 
     local result = {}
-    foreach(coords, function(coord)
-        local diffRow, diffCol = coord[1], coord[2]
-        local newRow = row + diffRow
-        local newCol = col + diffCol
-        if isInBounds(newRow, newCol) then
-            add(result, {row=newRow, col=newCol})
+    foreach(
+        coords, function(coord)
+            local diffRow, diffCol = coord[1], coord[2]
+            local newRow = row + diffRow
+            local newCol = col + diffCol
+            if isInBounds(newRow, newCol) and grid[newRow][newCol].type == open then
+                add(result, { row = newRow, col = newCol })
+            end
         end
-    end)
+    )
 
     return result
 end
 
-create_neighbor_map = function (level)
+create_neighbor_map = function(level)
     local result = {}
     local i = 1
-    for i=1, g.level_size do
+    for i = 1, g.level_size do
         result[i] = {}
-        for j=1, g.level_size do
+        for j = 1, g.level_size do
             local object = level[i][j]
             if object.type == open then
                 local neighbors = get_neighbours(i, j, g.level)

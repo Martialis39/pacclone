@@ -240,3 +240,8 @@ function foreachi(tbl, fn)
         i+=1
     end)
 end
+
+function lerp(a, b, t)
+    local result = a+t*(b-a)
+    return result
+end
