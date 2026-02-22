@@ -37,14 +37,14 @@ function create_enemy(row, col)
     end
 
     enemy.move = function(player)
-        -- if enemy.should_recalc then
-        --     enemy.should_recalc = false
-        --     enemy.target_tile = nil
-        -- end
-        -- if enemy.target_tile == nil then
-        --     local target = enemy.target_fn(player, g.level)
-        --     enemy.target_tile = target
-        -- end
+        if enemy.should_recalc then
+            enemy.should_recalc = false
+            enemy.target_tile = nil
+        end
+        if enemy.target_tile == nil then
+            local target = enemy.target_fn(player, g.level)
+            enemy.target_tile = target
+        end
 
         if enemy.movement_coroutine then
             if(costatus(enemy.movement_coroutine) != "dead") then
@@ -56,6 +56,7 @@ function create_enemy(row, col)
                 tile_position.x = flr(enemy.position.x / g.step)
                 tile_position.y = flr(enemy.position.y / g.step)
                 enemy.prev_tile = tile_position
+                enemy.target_tile = nil
 
             end
         else
@@ -68,28 +69,40 @@ function create_enemy(row, col)
             local neighbors = g.neighbor_map[tile_position.y][tile_position.x]
             local closest_index = 1
             local current_best = 999 -- random big number
-            foreachi(neighbors, function(n, i)
+            if enemy.prev_tile == nil then
+                log("No prev tile")
+            else
+                log("Has prev tile")
+                logtr(enemy.prev_tile)
+            end
+            log("L is "..#neighbors)
+            local new_neighbors = filter(neighbors, function(n)
+                if not enemy.prev_tile then
+                    return true
+                end
+                if n.col == enemy.prev_tile.x and n.row == enemy.prev_tile.y then
+                    return false
+                else
+                    return true
+                end
+            end)
+            log("New L is "..#new_neighbors)
+            logtr(tt, "Target tile is ")
+            foreachi(new_neighbors, function(n, i)
                 local dist = distance_to(vec2(n.col, n.row), vec2(tt.col, tt.row))
-                logt(enemy.prev_tile, "prev tile")
-                logt(n, "n")
                 if dist < current_best then
-                    if enemy.prev_tile == nil or enemy.prev_tile.x != n.row and enemy.prev_tile.y != n.col then
-                        current_best = dist
-                        closest_index = i
-                    end
+                    current_best = dist
+                    closest_index = i
                 end
             end)
             enemy.movement_coroutine = cocreate(function()
                 local target = neighbors[closest_index]
                 local frames = 4
                 for i=1, frames do
-
                     local new_x = lerp(enemy.position.x, target.col * g.step, i / frames ) 
-                    enemy.position.x = new_x
                     local new_y = lerp(enemy.position.y, target.row * g.step, i / frames ) 
+                    enemy.position.x = new_x
                     enemy.position.y = new_y
-                    log("New x "..new_x)
-                    log("New y "..new_y)
                     yield()
                 end
             end)
@@ -104,8 +117,6 @@ function compute_ahead_of_player(player, grid)
     local tile_x = flr(x / g.step)
     local tile_y = flr(y / g.step) 
     local tile_vec = vec2(tile_x, tile_y) + (player.facing * 3)
-    logt(tile_vec)
-    logt(player.dir, "Dir : ")
     local result = tile_vec
     local new_player = {}
     new_player.position = result * g.step
@@ -114,7 +125,7 @@ function compute_ahead_of_player(player, grid)
 end
 
 function compute_target_player(player, grid)
-    return player
+    return {row=player.position.y / 4, col = player.position.x / 4}
 end
 
 function noop(_player)
