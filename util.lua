@@ -159,3 +159,16 @@ function lerp(a, b, t)
     local result = a+t*(b-a)
     return result
 end
+
+function filter(list, fn)
+    local result = {}
+    for i=1, #list do
+        local element = list[i]
+        local test = fn(element)
+        if(test) then
+            add(result, element)
+        end
+        
+    end
+    return result
+end
