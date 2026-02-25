@@ -7,9 +7,11 @@ g.step = 4
 g.state = "game"
 g.level_size = 20
 g.enemies = {}
+g.scatter_targets = {}
 
 #include util.lua
 #include menu.lua
+#include tile.lua
 
 #include vec.lua
 
@@ -28,6 +30,12 @@ local game_init = function()
   g.enemies[1].target_fn = compute_target_player
   -- g.enemies[2].target_fn = compute_ahead_of_player
 
+  g.enemies[1].scatter_target = {}
+
+  logtr(g.scatter_targets)
+  g.enemies[1].scatter_target.row = flr(g.scatter_targets[1].y / 4)
+  g.enemies[1].scatter_target.col = flr(g.scatter_targets[1].x / 4)
+  g.enemies[1].mode = "scatter"
 end
 
 local game_upd = function()

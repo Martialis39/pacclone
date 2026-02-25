@@ -1,10 +1,10 @@
 local level_1 = {
     "####################",
     "#oooooooooooooooooo#",
-    "#o######ooooo#####o#",
-    "#o######ooooo#####o#",
-    "#o######oooxo#####o#",
-    "#o################o#",
+    "#o###o####o###o###o#",
+    "#o###o####o###o###o#",
+    "#o###o####x###o###o#",
+    "#o###o####o###o###o#",
     "#oooooooooooooooooo#",
     "#o################o#",
     "#o################o#",
@@ -17,10 +17,12 @@ local level_1 = {
     "#o################o#",
     "#o################o#",
     "#o################o#",
-    "#oooooooooooooooooo#",
+    "#oooooooooooooooook#",
     "####################"
 }
 
+
+scatter_target_4 = "k"
 enemy_tile = "x"
 local wall = "#"
 open = "o"
@@ -31,7 +33,7 @@ local wall_s = 17
 local open_s = 16
 
 local create_tile = function(x, y, type, spr)
-    return { x = x, y = y, type = type, h = g.step, w = g.step, s = spr }
+    return tile(x,y, type, spr, false)
 end
 
 function determine_sprite(letter)
@@ -70,6 +72,11 @@ local create_level = function(lev)
                         add(g.enemies, create_enemy(y / g.step, x / g.step))
                         l = open
                     end
+                    if letter == scatter_target_4 then
+                        log("Here it is")
+                        add(g.scatter_targets, {x=x, y=y})
+                        l = open
+                    end
                     local sprite = determine_sprite(l)
                     local t = create_tile(x, y, l, sprite)
                     x = x + g.step
@@ -90,8 +97,7 @@ local draw_level = function(level)
         level, function(line)
             foreach(
                 line, function(tile)
-                    local x, y, s = tile.x, tile.y, tile.s
-                    spr(s, x, y)
+                    tile:draw()
                 end
             )
         end

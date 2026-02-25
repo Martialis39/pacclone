@@ -26,6 +26,9 @@ function create_enemy(row, col)
         enemy.should_recalc = true
     end)
 
+    enemy.mode = "chase"
+    enemy.scatter_target = nil
+
 
 
     enemy.upd = function(player)
@@ -33,18 +36,22 @@ function create_enemy(row, col)
             enemy.target_tile = enemy.target_fn(player, g.level)
         end
         animate(enemy)
+        if enemy.mode == "chase" then
+            if enemy.should_recalc then
+                enemy.should_recalc = false
+                enemy.target_tile = nil
+            end
+            if enemy.target_tile == nil then
+                local target = enemy.target_fn(player, g.level)
+                enemy.target_tile = target
+            end
+        elseif enemy.mode == "scatter" then
+              enemy.target_tile = enemy.scatter_target
+        end
         enemy.move(player)
     end
 
     enemy.move = function(player)
-        if enemy.should_recalc then
-            enemy.should_recalc = false
-            enemy.target_tile = nil
-        end
-        if enemy.target_tile == nil then
-            local target = enemy.target_fn(player, g.level)
-            enemy.target_tile = target
-        end
 
         if enemy.movement_coroutine then
             if(costatus(enemy.movement_coroutine) != "dead") then
