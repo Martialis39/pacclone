@@ -8,6 +8,7 @@ g.state = "game"
 g.level_size = 20
 g.enemies = {}
 g.scatter_targets = {}
+g.score = 0
 
 #include util.lua
 #include menu.lua
@@ -23,7 +24,7 @@ local game_init = function()
   log("-- Start log --", true)
   g.level = create_level()
   g.neighbor_map = create_neighbor_map(g.level)
-  camera(g.step, g.step)
+  camera(4 * g.step * -1, -8)
   foreach(g.enemies, function(e)
     e.target_fn = noop
   end)
@@ -36,6 +37,16 @@ local game_init = function()
   g.enemies[1].scatter_target.row = flr(g.scatter_targets[1].y / 4)
   g.enemies[1].scatter_target.col = flr(g.scatter_targets[1].x / 4)
   g.enemies[1].mode = "scatter"
+
+  -- coins
+  add_listener(player_moved_event, function ()
+    local col = player.position.x / g.step
+    local row = player.position.y / g.step
+    if g.level[row][col].has_coin then
+      g.level[row][col].has_coin = false
+      g.score += 1
+    end
+  end)
 end
 
 local game_upd = function()
@@ -48,7 +59,8 @@ end
 local game_draw = function()
   cls()
   draw_level(g.level)
-  player.draw() 
+  player.draw()
+  print("score: "..g.score, 4, -4)
 
   foreach(g.enemies, function(enemy)
     enemy.draw()

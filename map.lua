@@ -32,8 +32,9 @@ local grass_tiles = { 19, 22 }
 local wall_s = 17
 local open_s = 16
 
-local create_tile = function(x, y, type, spr)
-    return tile(x,y, type, spr, false)
+local create_tile = function(x, y, type, spr, has_coin)
+    local coin = has_coin or false
+    return tile(x,y, type, spr, coin)
 end
 
 function determine_sprite(letter)
@@ -68,17 +69,22 @@ local create_level = function(lev)
             foreach(
                 row, function(letter)
                     local l = letter
+                    local has_coin = true
                     if letter == enemy_tile then
                         add(g.enemies, create_enemy(y / g.step, x / g.step))
                         l = open
+                        has_coin = false
                     end
                     if letter == scatter_target_4 then
                         log("Here it is")
                         add(g.scatter_targets, {x=x, y=y})
                         l = open
                     end
+                    if l != open then
+                        has_coin = false
+                    end
                     local sprite = determine_sprite(l)
-                    local t = create_tile(x, y, l, sprite)
+                    local t = create_tile(x, y, l, sprite, has_coin)
                     x = x + g.step
                     add(game_map[i], t)
                 end

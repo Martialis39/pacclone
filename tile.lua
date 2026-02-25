@@ -3,6 +3,9 @@ local tile_metatable = {
     draw = function(tile)
         local x, y, s = tile.x, tile.y, tile.s
         spr(s, x, y)
+        if tile.has_coin then
+            spr(5, x, y)
+        end
     end,
     get_vec = function(tile)
         return vec2(tile.x, tile.y)
