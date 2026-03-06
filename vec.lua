@@ -13,6 +13,9 @@ local mtbl = {
   __eq = function(a, b)
       return a.x == b.x and b.y == a.y
   end,
+  __div = function(a, b)
+    return vec2(a.x / b, a.y / b)
+  end,
   __tostring = function(table)
     local s = ""
     for k,v in pairs(table) do
@@ -28,7 +31,15 @@ function vec2(x, y)
     local y = y or 0
     local t = {x=x, y=y}
     setmetatable(t, mtbl)
+    t.floor = function(self)
+        return floor_vec(self)
+    end
     return t
+end
+
+function floor_vec(vec)
+    local x, y = vec.x, vec.y
+    return vec2(flr(x), flr(y))
 end
 
 function distance_to(a, b)

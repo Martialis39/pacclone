@@ -76,7 +76,6 @@ local create_level = function(lev)
                         has_coin = false
                     end
                     if letter == scatter_target_4 then
-                        log("Here it is")
                         add(g.scatter_targets, {x=x, y=y})
                         l = open
                     end

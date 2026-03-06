@@ -19,6 +19,7 @@ g.score = 0
 #include enemy.lua
 #include player.lua
 #include map.lua
+#include pathfinding.lua
 
 local game_init = function()
   log("-- Start log --", true)
@@ -36,7 +37,7 @@ local game_init = function()
   logtr(g.scatter_targets)
   g.enemies[1].scatter_target.row = flr(g.scatter_targets[1].y / 4)
   g.enemies[1].scatter_target.col = flr(g.scatter_targets[1].x / 4)
-  g.enemies[1].mode = "scatter"
+  g.enemies[1].mode = "chase"
 
   -- coins
   add_listener(player_moved_event, function ()
@@ -92,7 +93,7 @@ function _update()
   -- log("Current FPS: " .. stat(7))
   upd_fn()
 
-  log("Stat 1: " .. stat(1))
+  -- log("Stat 1: " .. stat(1))
 end
 
 __gfx__
