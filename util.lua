@@ -160,25 +160,24 @@ function lerp(a, b, t)
     return result
 end
 
+    local _filter = function(l, func)
+        local result = {}
+        for i=1, #l do
+            local element = l[i]
+            local test = func(element)
+            if(test) then
+                add(result, element)
+            end
+        end
+        return result
+        
+    end
 function filter(...)
 
     local args = {...}
     local list = nil
     local fn = nil
 
-    local _filter = function(l, func)
-        local result = {}
-        for i=1, #l do
-            local element = l[i]
-            local test = fn(element)
-            if(test) then
-                add(result, element)
-            end
-            
-        end
-        return result
-        
-    end
 
     if #args == 2 then
         list = args[1]
