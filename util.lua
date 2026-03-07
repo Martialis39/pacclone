@@ -177,8 +177,6 @@ function filter(...)
     local args = {...}
     local list = nil
     local fn = nil
-
-
     if #args == 2 then
         list = args[1]
         fn = args[2]
@@ -189,6 +187,7 @@ function filter(...)
             return _filter(l, fn)
         end
     end
+    assert("Invalid arguments to filter")
 end
 
 function reduce(list, fn, start_val) -- takes accumulator and curr, accumu
