@@ -20,11 +20,6 @@ function create_enemy(row, col)
         spr(enemy.frames[enemy.f_index], x, enemy.position.y, 1, 1, enemy.flipped)
     end
     enemy.path = nil
-    add_listener(
-        player_moved_event, function()
-            enemy.should_recalc = true
-        end
-    )
 
     enemy.mode = "chase"
     enemy.scatter_target = nil
@@ -32,14 +27,8 @@ function create_enemy(row, col)
     enemy.upd = function(player)
         animate(enemy)
         if enemy.mode == "chase" then
-            if enemy.should_recalc then
-                enemy.should_recalc = false
-                enemy.target_tile = nil
-            end
-            if enemy.target_tile == nil then
-                local target = enemy.target_fn(player, g.level)
-                enemy.target_tile = target
-            end
+            local target = enemy.target_fn(player, g.level)
+            enemy.target_tile = target
         elseif enemy.mode == "scatter" then
             enemy.target_tile = enemy.scatter_target
         end
@@ -51,47 +40,43 @@ function create_enemy(row, col)
             if (costatus(enemy.movement_coroutine) != "dead") then
                 assert(coresume(enemy.movement_coroutine))
                 return
-            else
-                enemy.movement_coroutine = nil
-                enemy.target_tile = nil
             end
-        else
-            local tt = enemy.target_tile
-            local tile_position = (enemy.position / g.step):floor() -- lua magic passes self to floor
-            local neighbors = g.neighbor_map[tile_position.y][tile_position.x]
-            local new_neighbors = filter(
-                neighbors, function(n)
-                    return filter_out_prev(enemy, n)
+        end
+        local tt = enemy.target_tile
+        local tile_position = (enemy.position / g.step):floor() -- lua magic passes self to floor
+        local neighbors = g.neighbor_map[tile_position.y][tile_position.x]
+        local new_neighbors = filter(
+            neighbors, function(n)
+                return filter_out_prev(enemy, n)
+            end
+        )
+        local closest_index = 1
+
+        if #neighbors != 1 then
+            -- find closest
+            local current_best = 999 -- random big number
+            foreachi(
+                new_neighbors, function(n, i)
+                    local dist = distance_to(vec2(n.col, n.row), vec2(tt.col, tt.row))
+                    if dist < current_best then
+                        current_best = dist
+                        closest_index = i
+                    end
                 end
             )
-            local closest_index = 1
-
-            if #neighbors != 1 then
-                -- find closest
-                local current_best = 999 -- random big number
-                foreachi(
-                    new_neighbors, function(n, i)
-                        local dist = distance_to(vec2(n.col, n.row), vec2(tt.col, tt.row))
-                        if dist < current_best then
-                            current_best = dist
-                            closest_index = i
-                        end
-                    end
-                )
-            end
-            enemy.movement_coroutine = cocreate(function()
-                local target = new_neighbors[closest_index]
-                local frames = 4
-                for i = 1, frames do
-                    local new_x = lerp(enemy.position.x, target.col * g.step, i / frames)
-                    local new_y = lerp(enemy.position.y, target.row * g.step, i / frames)
-                    enemy.position.x = new_x
-                    enemy.position.y = new_y
-                    yield()
-                end
-            end)
-            enemy.prev_tile = tile_position
         end
+        enemy.movement_coroutine = cocreate(function()
+            local target = new_neighbors[closest_index]
+            local frames = 4
+            for i = 1, frames do
+                local new_x = lerp(enemy.position.x, target.col * g.step, i / frames)
+                local new_y = lerp(enemy.position.y, target.row * g.step, i / frames)
+                enemy.position.x = new_x
+                enemy.position.y = new_y
+                yield()
+            end
+        end)
+        enemy.prev_tile = tile_position
     end
     return enemy
 end
