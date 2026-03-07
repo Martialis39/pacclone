@@ -82,14 +82,10 @@ function create_enemy(row, col)
 end
 
 function compute_ahead_of_player(player, grid)
-    local x, y = player.position.x, player.position.y
-    local tile_x = flr(x / g.step)
-    local tile_y = flr(y / g.step)
-    local tile_vec = vec2(tile_x, tile_y) + (player.facing * 3)
-    local result = tile_vec
+    local curr = (player.position / g.step).floor()
+    local target = curr + (player.facing * 3)
     local new_player = {}
-    new_player.position = result * g.step
-
+    new_player.position = target * g.step
     return new_player
 end
 
