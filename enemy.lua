@@ -46,10 +46,10 @@ function create_enemy(row, col)
         local tile_position = (enemy.position / g.step):floor() -- lua magic passes self to floor
         local neighbors = g.neighbor_map[tile_position.y][tile_position.x]
         local new_neighbors = filter(
-            neighbors, function(n)
+            function(n)
                 return filter_out_prev(enemy, n)
             end
-        )
+        )(neighbors)
         local closest_index = 1
 
         if #neighbors != 1 then

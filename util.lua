@@ -160,15 +160,44 @@ function lerp(a, b, t)
     return result
 end
 
-function filter(list, fn)
-    local result = {}
-    for i=1, #list do
-        local element = list[i]
-        local test = fn(element)
-        if(test) then
-            add(result, element)
+function filter(...)
+
+    local args = {...}
+    local list = nil
+    local fn = nil
+
+    local _filter = function(l, func)
+        local result = {}
+        for i=1, #l do
+            local element = l[i]
+            local test = fn(element)
+            if(test) then
+                add(result, element)
+            end
+            
         end
+        return result
         
     end
+
+    if #args == 2 then
+        list = args[1]
+        fn = args[2]
+        return _filter(list, fn)
+    elseif #args == 1 then -- curry
+        fn = args[1]
+        return function(l)
+            return _filter(l, fn)
+        end
+    end
+end
+
+function reduce(list, fn, start_val) -- takes accumulator and curr, accumu
+    local result = start_val
+    foreach(list, function(element)
+        result = fn(result, element)
+    end)
+
     return result
+        
 end
