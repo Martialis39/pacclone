@@ -82,7 +82,7 @@ function create_enemy(row, col)
 end
 
 function compute_ahead_of_player(player, grid)
-    local curr = (player.position / g.step).floor()
+    local curr = (player.position / g.step):floor()
     local target = curr + (player.facing * 3)
     local new_player = {}
     new_player.position = target * g.step
