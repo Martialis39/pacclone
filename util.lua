@@ -1,4 +1,3 @@
-
 function for_each_grid(grid, fn, break_fn)
     local early_break = break_fn or function()
         return false
@@ -8,7 +7,6 @@ function for_each_grid(grid, fn, break_fn)
     while i <= #grid and (early_break() == false) do
         local j = 1
         while j <= #grid[i] and (early_break() == false) do
-            
             fn(grid[i][j])
             j = j + 1
         end
@@ -30,7 +28,7 @@ function logt(t, l)
         s = s .. label .. ": "
     end
     for k, v in pairs(t) do
-        local new_snip = k..":"..v.."; "
+        local new_snip = k .. ":" .. v .. "; "
         s = s .. new_snip
     end
     log(s)
@@ -38,7 +36,7 @@ function logt(t, l)
 end
 
 function logtr(t, l)
-local label = l or nil
+    local label = l or nil
     local s = ""
     if label then
         s = s .. label .. ": "
@@ -46,65 +44,64 @@ local label = l or nil
     for k, v in pairs(t) do
         if type(v) == "table" then
             local res = logtr(v, k)
-            s = s..res
+            s = s .. res
         else
-            local new_snip = k..":"..v.."; "
-        s = s .. new_snip
+            local new_snip = k .. ":" .. v .. "; "
+            s = s .. new_snip
         end
     end
     log(s)
     return s
 end
 
-
 local animate = function(entity)
-  entity.tick += 1
-  if entity.tick > 4 then
-    entity.tick = 0
-    entity.f_index += 1
-    if entity.f_index > #entity.frames then
-      entity.f_index = 1
-    end 
-  end
+    entity.tick += 1
+    if entity.tick > 4 then
+        entity.tick = 0
+        entity.f_index += 1
+        if entity.f_index > #entity.frames then
+            entity.f_index = 1
+        end
+    end
 end
 
- function reverse(table)
+function reverse(table)
     local res = {}
     local j = 1
-    for i=#table, 1, -1 do
+    for i = #table, 1, -1 do
         res[i] = table[j]
         j += 1
     end
     return res
 end
 -- ty nerdy teachers!
-function rect_rect_collision( r1, r2 )
-  return r1.x < r2.x+r2.w and
-         r1.x+r1.w > r2.x and
-         r1.y < r2.y+r2.h and
-         r1.y+r1.h > r2.y
+function rect_rect_collision(r1, r2)
+    return r1.x < r2.x + r2.w
+            and r1.x + r1.w > r2.x
+            and r1.y < r2.y + r2.h
+            and r1.y + r1.h > r2.y
 end
 
 check_map_collision = function(entity)
-  local collision = false
-  local tile_position_row = flr(entity.position.y / g.step)
-  local rows_to_check = {-1, 0, 1}
-  for i=1, #rows_to_check do
-    local new_row = tile_position_row + rows_to_check[i]
-    if not (new_row < 1 or new_row > g.level_size) then
-       local current_row = g.level[new_row]
-       for j=1, #current_row do
-         collision = check_tile_collision(entity, current_row[j]) 
-         if collision then
+    local collision = false
+    local tile_position_row = flr(entity.position.y / g.step)
+    local rows_to_check = { -1, 0, 1 }
+    for i = 1, #rows_to_check do
+        local new_row = tile_position_row + rows_to_check[i]
+        if not (new_row < 1 or new_row > g.level_size) then
+            local current_row = g.level[new_row]
+            for j = 1, #current_row do
+                collision = check_tile_collision(entity, current_row[j])
+                if collision then
+                    break
+                end
+            end
+        end
+        if collision then
             break
-         end
-       end
+        end
     end
-    if collision then
-        break
-    end
-  end
-  return collision
+    return collision
 end
 
 check_tile_collision = function(entity, object)
@@ -126,21 +123,21 @@ local listeners = {
 }
 
 function add_listener(type, fn)
-    if (listeners[type]) then
+    if listeners[type] then
         add(listeners[type], fn)
     end
 end
-
 
 function emit(t)
     local ls = listeners[t]
     if not ls then
         return
     end
-    foreach(ls, function(listener)
-        listener()
-    end)
-
+    foreach(
+        ls, function(listener)
+            listener()
+        end
+    )
 end
 
 function emit_recalc()
@@ -149,39 +146,41 @@ end
 
 function foreachi(tbl, fn)
     local i = 1
-    foreach(tbl, function(e)
-        fn(e, i)
-        i+=1
-    end)
+    foreach(
+        tbl, function(e)
+            fn(e, i)
+            i += 1
+        end
+    )
 end
 
 function lerp(a, b, t)
-    local result = a+t*(b-a)
+    local result = a + t * (b - a)
     return result
 end
 
-    local _filter = function(l, func)
-        local result = {}
-        for i=1, #l do
-            local element = l[i]
-            local test = func(element)
-            if(test) then
-                add(result, element)
-            end
+local _filter = function(l, func)
+    local result = {}
+    for i = 1, #l do
+        local element = l[i]
+        local test = func(element)
+        if test then
+            add(result, element)
         end
-        return result
-        
     end
-function filter(...)
+    return result
+end
 
-    local args = {...}
+function filter(...)
+    local args = { ... }
     local list = nil
     local fn = nil
     if #args == 2 then
         list = args[1]
         fn = args[2]
         return _filter(list, fn)
-    elseif #args == 1 then -- curry
+    elseif #args == 1 then
+        -- curry
         fn = args[1]
         return function(l)
             return _filter(l, fn)
@@ -190,12 +189,14 @@ function filter(...)
     assert("Invalid arguments to filter")
 end
 
-function reduce(list, fn, start_val) -- takes accumulator and curr, accumu
+function reduce(list, fn, start_val)
+    -- takes accumulator and curr, accumu
     local result = start_val
-    foreach(list, function(element)
-        result = fn(result, element)
-    end)
+    foreach(
+        list, function(element)
+            result = fn(result, element)
+        end
+    )
 
     return result
-        
 end
