@@ -109,11 +109,11 @@ local draw_level = function(level)
     )
 end
 
-function isInBounds(row, col)
+function is_in_bounds(row, col)
     return row > 0 and col > 0 and row < g.level_size + 1 and col < g.level_size + 1
 end
 
-local function get_neighbours(row, col, grid)
+local function get_neighbours(y, x, grid)
     local coords = {
         { 0, 1 },
         { 0, -1 },
@@ -124,11 +124,11 @@ local function get_neighbours(row, col, grid)
     local result = {}
     foreach(
         coords, function(coord)
-            local diffRow, diffCol = coord[1], coord[2]
-            local newRow = row + diffRow
-            local newCol = col + diffCol
-            if isInBounds(newRow, newCol) and grid[newRow][newCol].type == open then
-                add(result, { row = newRow, col = newCol })
+            local diff_y, diff_x = coord[1], coord[2]
+            local new_y = y + diff_y
+            local new_x = x + diff_x
+            if is_in_bounds(new_y, new_x) and grid[new_y][new_x].type == open then
+                add(result, { row = new_y, col = new_x })
             end
         end
     )
