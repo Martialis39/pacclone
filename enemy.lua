@@ -57,7 +57,7 @@ function create_enemy(row, col)
             local current_best = 999 -- random big number
             foreachi(
                 new_neighbors, function(n, i)
-                    local dist = distance_to(vec2(n.col, n.row), vec2(tt.col, tt.row))
+                    local dist = distance_to(vec2(n.x, n.y), vec2(tt.col, tt.row))
                     if dist < current_best then
                         current_best = dist
                         closest_index = i
@@ -69,8 +69,8 @@ function create_enemy(row, col)
             local target = new_neighbors[closest_index]
             local frames = 4
             for i = 1, frames do
-                local new_x = lerp(enemy.position.x, target.col * g.step, i / frames)
-                local new_y = lerp(enemy.position.y, target.row * g.step, i / frames)
+                local new_x = lerp(enemy.position.x, target.x * g.step, i / frames)
+                local new_y = lerp(enemy.position.y, target.y * g.step, i / frames)
                 enemy.position.x = new_x
                 enemy.position.y = new_y
                 yield()
@@ -102,7 +102,7 @@ function filter_out_prev(enemy, n)
     if not enemy.prev_tile then
         return true
     end
-    if n.col == enemy.prev_tile.x and n.row == enemy.prev_tile.y then
+    if n.x == enemy.prev_tile.x and n.y == enemy.prev_tile.y then
         return false
     else
         return true

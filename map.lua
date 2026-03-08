@@ -128,7 +128,7 @@ local function get_neighbours(y, x, grid)
             local new_y = y + diff_y
             local new_x = x + diff_x
             if is_in_bounds(new_y, new_x) and grid[new_y][new_x].type == open then
-                add(result, { row = new_y, col = new_x })
+                add(result, { y = new_y, x = new_x })
             end
         end
     )
