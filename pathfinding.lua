@@ -1,5 +1,10 @@
 
 function find_first_open(x, y, grid)
+    if x > g.level_size then x = g.level_size end
+    if y > g.level_size then y = g.level_size end
+
+    if x < 1 then x = 1 end
+    if y < 1 then y = 1 end
     if grid[y][x].type == open then
         return vec2(x, y)
     end
@@ -16,7 +21,9 @@ function find_first_open(x, y, grid)
         local neighbors = g.neighbor_map[curr_y][curr_x] or {}
         foreach(neighbors, function(n)
             local neighbor_y, neighbor_x = n.row, n.col
-
+            if visited[neighbor_y][neighbor_x] then
+                return
+            end
             if grid[neighbor_y][neighbor_x].type == open then
                 return vec2(neighbor_x, neighbor_y)
             else
@@ -25,6 +32,7 @@ function find_first_open(x, y, grid)
             
         end)
     end
+    return nil
 end
 
 -- function bfs(start_row, start_col, end_row, end_col, grid)

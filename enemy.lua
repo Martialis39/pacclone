@@ -82,16 +82,23 @@ function create_enemy(row, col)
 end
 
 function compute_ahead_of_player(player, grid)
+    
     local curr = (player.position / g.step):floor()
+    
     local target = curr + (player.facing * 3)
+    local first = find_first_open(target.y, target.x, grid)
+    if first == nil then
+        return compute_target_player(player, grid)
+    end
     local new_player = {}
-    new_player.position = target * g.step
+    new_player.position = first * g.step
     return new_player
 end
 
 function compute_target_player(player, grid)
     return { row = flr(player.position.y / 4), col = flr(player.position.x / 4) }
 end
+
 
 function noop(_player)
     local t = { position = vec2(16, 16) }

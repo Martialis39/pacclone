@@ -3,7 +3,7 @@ local level_1 = {
     "#oooooooooooooooooo#",
     "#o###o####o###o###o#",
     "#o###o####o###o###o#",
-    "#o###o####x###o###o#",
+    "#o###x####x###x###o#",
     "#o###o####o###o###o#",
     "#oooooooooooooooooo#",
     "#o################o#",
@@ -17,7 +17,7 @@ local level_1 = {
     "#o################o#",
     "#o################o#",
     "#o################o#",
-    "#oooooooooooooooook#",
+    "#oooooooooooooooooo#",
     "####################"
 }
 
@@ -75,10 +75,10 @@ local create_level = function(lev)
                         l = open
                         has_coin = false
                     end
-                    if letter == scatter_target_4 then
-                        add(g.scatter_targets, {x=x, y=y})
-                        l = open
-                    end
+                    -- if letter == scatter_target_4 then
+                    --     add(g.scatter_targets, {x=x, y=y})
+                    --     l = open
+                    -- end
                     if l != open then
                         has_coin = false
                     end

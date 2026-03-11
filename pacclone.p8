@@ -7,7 +7,7 @@ g.step = 4
 g.state = "game"
 g.level_size = 20
 g.enemies = {}
-g.scatter_targets = {}
+g.scatter_targets = {{x=2 * 4, y=2 * 4}}
 g.score = 0
 
 #include util.lua
@@ -30,7 +30,9 @@ local game_init = function()
     e.target_fn = noop
   end)
   g.enemies[1].target_fn = compute_target_player
-  -- g.enemies[2].target_fn = compute_ahead_of_player
+  -- g.enemies[2].target_fn = compute_target_player
+  g.enemies[2].target_fn = compute_ahead_of_player
+  g.enemies[3].target_fn = compute_target_player
 
   g.enemies[1].scatter_target = {}
 
