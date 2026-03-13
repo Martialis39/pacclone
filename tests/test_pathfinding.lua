@@ -1,0 +1,42 @@
+-- tests for pathfinding
+-- register_test("find_first_open_simple", function()
+--     -- small 2x2 grid, start at 1,1 which is blocked, expect nearest open at 2,1
+--     local grid = {
+--         { {type="#"}, {type="o"} },
+--         { {type="o"}, {type="o"} }
+--     }
+--     local neighbor_map = {
+--         [1] = {
+--             [1] = { {row=1,col=2}, {row=2,col=1} },
+--             [2] = { {row=1,col=1}, {row=2,col=2} }
+--         },
+--         [2] = {
+--             [1] = { {row=1,col=1}, {row=2,col=2} },
+--             [2] = { {row=1,col=2}, {row=2,col=1} }
+--         }
+--     }
+--     with_g({level_size=2, neighbor_map=neighbor_map}, function()
+--         open = "o"
+--         local res = find_first_open(1,1,grid)
+--         assert_eq(2, res.x, "find_first_open x")
+--         assert_eq(1, res.y, "find_first_open y")
+--     end)
+--     return true
+-- end)
+
+-- register_test("find_first_open_start_open", function()
+--     local grid = {
+--         { {type="o"}, {type="#"} },
+--         { {type="#"}, {type="#"} }
+--     }
+--     local neighbor_map = {
+--         [1] = {[1]={}, [2]={}}, [2] = {[1]={}, [2]={}}
+--     }
+--     with_g({level_size=2, neighbor_map=neighbor_map}, function()
+--         open = "o"
+--         local res = find_first_open(1,1,grid)
+--         assert_eq(1, res.x, "start open x")
+--         assert_eq(1, res.y, "start open y")
+--     end)
+--     return true
+-- end)

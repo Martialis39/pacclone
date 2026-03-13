@@ -20,6 +20,12 @@ g.score = 0
 #include player.lua
 #include map.lua
 #include pathfinding.lua
+#include tests/test_harness.lua
+#include tests/test_vec.lua
+#include tests/test_util.lua
+#include tests/test_pathfinding.lua
+#include tests/test_enemy.lua
+#include tests/loader.lua
 
 local game_init = function()
   log("-- Start log --", true)
@@ -53,10 +59,23 @@ local game_init = function()
 end
 
 local game_upd = function()
+  if TESTS_ACTIVE then
+    -- pause game updates while tests are active
+    return
+  end
   player.upd()
   foreach(g.enemies, function(enemy)
     enemy.upd(player)
   end)
+  -- allow running tests from the game state via confirm button (btnp 4)
+  if btnp(4) then
+    if run_tests then
+      run_tests()
+      return
+    else
+      printh("run_tests not loaded", "log.txt")
+    end
+  end
 end
 
 local game_draw = function()
@@ -68,7 +87,10 @@ local game_draw = function()
   foreach(g.enemies, function(enemy)
     enemy.draw()
   end)
-
+  -- if tests ran, render test summary overlay
+  if TEST_RESULTS then
+    if tests_draw then tests_draw() end
+  end
 end
 
 
